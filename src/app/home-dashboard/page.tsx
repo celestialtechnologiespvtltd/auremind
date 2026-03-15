@@ -13,8 +13,8 @@ export default function HomeDashboardPage() {
       <div className="relative space-y-6 py-2">
         <FloatingDoodles />
         <HeroGreeting />
-        <QuickFeatureCards />
         <DailyQuoteCard />
+        <QuickFeatureCards />
         <WellnessTips />
         <SoundCards />
         <CommunityPreview />

@@ -11,6 +11,11 @@ const tips = [
   { id: 'tip-5', emoji: '🌿', tip: "Write 3 things you\'re grateful for each morning for positivity", color: 'bg-amber-50 border-amber-100' },
 ];
 
+function getTodayDateStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
 export default function WellnessTips() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [animating, setAnimating] = useState<Record<string, boolean>>({});
@@ -18,10 +23,32 @@ export default function WellnessTips() {
 
   useEffect(() => {
     setMounted(true);
+    const today = getTodayDateStr();
     try {
+      const savedDate = localStorage.getItem('wellness-tips-date');
       const saved = localStorage.getItem('wellness-tips-checked');
-      if (saved) setChecked(JSON.parse(saved));
+      if (savedDate !== today) {
+        // New day — reset all tips
+        localStorage.setItem('wellness-tips-date', today);
+        localStorage.setItem('wellness-tips-checked', JSON.stringify({}));
+        setChecked({});
+      } else if (saved) {
+        setChecked(JSON.parse(saved));
+      }
     } catch {}
+
+    // Schedule midnight reset
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(24, 0, 0, 0);
+    const msUntilMidnight = midnight.getTime() - now.getTime();
+    const timer = setTimeout(() => {
+      const newDate = getTodayDateStr();
+      localStorage.setItem('wellness-tips-date', newDate);
+      localStorage.setItem('wellness-tips-checked', JSON.stringify({}));
+      setChecked({});
+    }, msUntilMidnight);
+    return () => clearTimeout(timer);
   }, []);
 
   const toggle = (id: string) => {
@@ -46,7 +73,7 @@ export default function WellnessTips() {
         <h2 className="font-nunito font-700 text-lg text-purple-900">Quick Tips 💡</h2>
         {mounted && (
           <span className="text-xs font-medium text-purple-600 bg-purple-50 border border-purple-100 px-2.5 py-1 rounded-full">
-            {completedCount}/{tips.length} completed
+            {completedCount}/{tips.length} · resets midnight
           </span>
         )}
       </div>
@@ -64,16 +91,14 @@ export default function WellnessTips() {
               transition={{ delay: i * 0.08 }}
               className={`flex items-start gap-3 p-3.5 rounded-2xl border ${t?.color} transition-all hover:shadow-sm ${isChecked ? 'opacity-50' : 'opacity-100'}`}
             >
-              {/* Custom Checkbox */}
               <button
                 onClick={() => toggle(t.id)}
                 aria-label={isChecked ? 'Uncheck tip' : 'Check tip'}
-                className="flex-shrink-0 mt-0.5 relative w-5 h-5 focus:outline-none"
+                className="flex-shrink-0 mt-0.5 relative w-6 h-6 min-w-[44px] min-h-[44px] -m-2.5 flex items-center justify-center focus:outline-none"
               >
                 <span
                   className={`block w-5 h-5 rounded-full border-2 transition-all duration-200 ${
-                    isChecked
-                      ? 'bg-purple-500 border-purple-500' :'bg-white border-purple-300 hover:border-purple-400'
+                    isChecked ? 'bg-purple-500 border-purple-500' : 'bg-white border-purple-300 hover:border-purple-400'
                   }`}
                 />
                 <AnimatePresence>
@@ -84,22 +109,14 @@ export default function WellnessTips() {
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                      className="absolute inset-0 w-5 h-5 text-white"
+                      className="absolute w-5 h-5 text-white"
                       viewBox="0 0 20 20"
                       fill="none"
                     >
-                      <path
-                        d="M5 10l3.5 3.5L15 7"
-                        stroke="currentColor"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
+                      <path d="M5 10l3.5 3.5L15 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                     </motion.svg>
                   )}
                 </AnimatePresence>
-
-                {/* Checkmark burst animation */}
                 <AnimatePresence>
                   {isAnimating && (
                     <motion.span
@@ -115,11 +132,7 @@ export default function WellnessTips() {
               </button>
 
               <span className="text-xl flex-shrink-0">{t?.emoji}</span>
-              <p
-                className={`text-sm font-dm text-purple-800 leading-relaxed transition-all duration-300 ${
-                  isChecked ? 'line-through text-purple-400' : ''
-                }`}
-              >
+              <p className={`text-sm font-dm text-purple-800 leading-relaxed transition-all duration-300 ${isChecked ? 'line-through text-purple-400' : ''}`}>
                 {t?.tip}
               </p>
             </motion.div>

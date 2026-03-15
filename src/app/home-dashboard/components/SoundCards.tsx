@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Play, Pause } from 'lucide-react';
 
 const sounds = [
@@ -9,88 +9,27 @@ const sounds = [
   { name: 'Ocean Waves', emoji: '🌊', gradient: 'gradient-lavender', color: 'text-purple-800', duration: '∞', mood: 'Relaxing', type: 'ocean' },
   { name: 'Calm Piano', emoji: '🎹', gradient: 'gradient-peach', color: 'text-pink-800', duration: '∞', mood: 'Peaceful', type: 'piano' },
   { name: 'Forest Birds', emoji: '🌲', gradient: 'gradient-green', color: 'text-green-800', duration: '∞', mood: 'Grounding', type: 'forest' },
+  { name: 'Thunderstorm', emoji: '⛈️', gradient: 'gradient-blue', color: 'text-blue-800', duration: '∞', mood: 'Powerful', type: 'thunder' },
+  { name: 'White Noise', emoji: '🌫️', gradient: 'gradient-cream', color: 'text-amber-800', duration: '∞', mood: 'Focus', type: 'white' },
+  { name: 'Coffee Shop', emoji: '☕', gradient: 'gradient-cream', color: 'text-amber-800', duration: '∞', mood: 'Cozy', type: 'coffee' },
+  { name: 'Fireplace', emoji: '🔥', gradient: 'gradient-peach', color: 'text-pink-800', duration: '∞', mood: 'Warm', type: 'fire' },
+  { name: 'Tibetan Bowls', emoji: '🎵', gradient: 'gradient-lavender', color: 'text-purple-800', duration: '∞', mood: 'Meditative', type: 'bowls' },
+  { name: 'Birds at Dawn', emoji: '🐦', gradient: 'gradient-green', color: 'text-green-800', duration: '∞', mood: 'Uplifting', type: 'birds' },
+  { name: 'Deep Space', emoji: '🌌', gradient: 'gradient-blue', color: 'text-blue-800', duration: '∞', mood: 'Cosmic', type: 'space' },
+  { name: 'Gentle Stream', emoji: '🏞️', gradient: 'gradient-green', color: 'text-green-800', duration: '∞', mood: 'Serene', type: 'stream' },
 ];
 
-function OceanAnimation() {
+function GenericAnimation({ color }: { color: string }) {
   return (
     <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-      {[0, 1, 2]?.map((i) => (
+      {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
-          className="absolute bottom-0 left-0 right-0 h-8 rounded-full opacity-20"
-          style={{ background: 'linear-gradient(180deg, #a2d2ff 0%, #6fa8dc 100%)', bottom: `${i * 6}px` }}
-          animate={{ x: ['-10%', '10%', '-10%'], scaleX: [1, 1.05, 1] }}
-          transition={{ duration: 2.5 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
-        />
-      ))}
-    </div>
-  );
-}
-
-function RainAnimation() {
-  const drops = Array.from({ length: 12 });
-  return (
-    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-      {drops?.map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-0.5 rounded-full opacity-30"
-          style={{
-            background: 'linear-gradient(180deg, #a2d2ff, transparent)',
-            height: `${8 + Math.random() * 10}px`,
-            left: `${(i / drops?.length) * 100}%`,
-            top: '-10px',
-          }}
-          animate={{ y: ['0px', '120px'], opacity: [0.4, 0] }}
-          transition={{
-            duration: 0.8 + (i % 4) * 0.2,
-            repeat: Infinity,
-            delay: (i * 0.15) % 1.2,
-            ease: 'linear',
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-function ForestAnimation() {
-  return (
-    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-      {['🍃', '🌿', '🍀']?.map((leaf, i) => (
-        <motion.span
-          key={i}
-          className="absolute text-sm opacity-25"
-          style={{ left: `${20 + i * 25}%`, bottom: '10px' }}
-          animate={{ rotate: [-8, 8, -8], y: [0, -4, 0] }}
+          className="absolute rounded-full opacity-15"
+          style={{ background: color, width: `${60 + i * 20}px`, height: `${60 + i * 20}px`, bottom: `-${i * 10}px`, left: `${i * 15}%` }}
+          animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.25, 0.15] }}
           transition={{ duration: 2 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-        >
-          {leaf}
-        </motion.span>
-      ))}
-    </div>
-  );
-}
-
-function PianoAnimation() {
-  const notes = ['♩', '♪', '♫', '♬'];
-  return (
-    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-      {notes?.map((note, i) => (
-        <motion.span
-          key={i}
-          className="absolute text-xs opacity-30 text-pink-600"
-          style={{ left: `${15 + i * 20}%`, bottom: '8px' }}
-          animate={{ y: [0, -30, -60], opacity: [0.4, 0.3, 0] }}
-          transition={{
-            duration: 1.8,
-            repeat: Infinity,
-            delay: i * 0.45,
-            ease: 'easeOut',
-          }}
-        >
-          {note}
-        </motion.span>
+        />
       ))}
     </div>
   );
@@ -98,6 +37,26 @@ function PianoAnimation() {
 
 export default function SoundCards() {
   const [playing, setPlaying] = useState<number | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('mindbloom_sound_prefs');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.lastPlaying !== null && parsed.lastPlaying !== undefined) {
+          // Don't auto-resume, just restore preference
+        }
+      }
+    } catch {}
+  }, []);
+
+  const togglePlay = (i: number) => {
+    const next = playing === i ? null : i;
+    setPlaying(next);
+    try {
+      localStorage.setItem('mindbloom_sound_prefs', JSON.stringify({ lastPlaying: next }));
+    } catch {}
+  };
 
   return (
     <div>
@@ -111,21 +70,13 @@ export default function SoundCards() {
             key={s?.name}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.1 }}
+            transition={{ delay: i * 0.06 }}
             whileTap={{ scale: 0.94 }}
-            onClick={() => setPlaying(playing === i ? null : i)}
-            className={`relative ${s?.gradient} rounded-3xl p-4 flex flex-col items-center gap-3 min-w-[100px] border border-white/60 shadow-sm transition-all duration-300 overflow-hidden ${playing === i ? 'ring-2 ring-purple-300 shadow-lg' : ''}`}
+            onClick={() => togglePlay(i)}
+            className={`relative ${s?.gradient} rounded-3xl p-4 flex flex-col items-center gap-3 min-w-[100px] border border-white/60 shadow-sm transition-all duration-300 overflow-hidden min-h-[44px] ${playing === i ? 'ring-2 ring-purple-300 shadow-lg' : ''}`}
           >
-            {/* Sound-specific animation overlay */}
             <AnimatePresence>
-              {playing === i && (
-                <>
-                  {s?.type === 'ocean' && <OceanAnimation />}
-                  {s?.type === 'rain' && <RainAnimation />}
-                  {s?.type === 'forest' && <ForestAnimation />}
-                  {s?.type === 'piano' && <PianoAnimation />}
-                </>
-              )}
+              {playing === i && <GenericAnimation color="#CDB4DB" />}
             </AnimatePresence>
 
             <motion.span

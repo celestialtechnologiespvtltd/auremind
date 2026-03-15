@@ -49,7 +49,7 @@ const features = [
     desc: 'Talk to an expert',
     emoji: '💬',
     gradient: 'gradient-cream',
-    path: '/community-section',
+    path: '/contact',
     textColor: 'text-amber-800',
   },
 ];
@@ -70,7 +70,7 @@ export default function QuickFeatureCards() {
             whileTap={{ scale: 0.92 }}
             whileHover={{ y: -4, boxShadow: '0 12px 30px rgba(205,180,219,0.4)' }}
             onClick={() => router?.push(f?.path)}
-            className={`${f?.gradient} rounded-3xl p-4 flex flex-col items-center gap-2 shadow-sm border border-white/60 cursor-pointer transition-all duration-300`}
+            className={`${f?.gradient} rounded-3xl p-4 flex flex-col items-center gap-2 shadow-sm border border-white/60 cursor-pointer transition-all duration-300 min-h-[44px]`}
           >
             <span className="text-3xl">{f?.emoji}</span>
             <div className="text-center">

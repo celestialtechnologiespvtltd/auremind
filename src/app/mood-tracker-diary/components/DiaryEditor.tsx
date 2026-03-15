@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Save, X } from 'lucide-react';
@@ -17,13 +17,21 @@ const prompts = [
 
 interface DiaryEditorProps {
   onClose?: () => void;
+  initialMood?: number;
+  moodLabel?: string;
 }
 
-export default function DiaryEditor({ onClose }: DiaryEditorProps) {
+export default function DiaryEditor({ onClose, initialMood, moodLabel }: DiaryEditorProps) {
   const [text, setText] = useState('');
   const [promptIdx, setPromptIdx] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (initialMood && moodLabel) {
+      setText(`Mood: ${moodLabel} (${initialMood}/10)\n\n`);
+    }
+  }, [initialMood, moodLabel]);
 
   const handleSave = () => {
     if (!text?.trim()) {
@@ -34,6 +42,20 @@ export default function DiaryEditor({ onClose }: DiaryEditorProps) {
     setTimeout(() => {
       setIsSaving(false);
       setSaved(true);
+      // Save note to localStorage
+      try {
+        const notes = JSON.parse(localStorage.getItem('mindbloom_notes') || '[]');
+        notes.unshift({
+          id: Date.now(),
+          text,
+          mood: initialMood,
+          moodLabel,
+          date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+          time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+          timestamp: new Date().toISOString(),
+        });
+        localStorage.setItem('mindbloom_notes', JSON.stringify(notes.slice(0, 100)));
+      } catch {}
       toast?.success('Diary entry saved! 🌸');
       setTimeout(() => {
         setSaved(false);
@@ -55,7 +77,10 @@ export default function DiaryEditor({ onClose }: DiaryEditorProps) {
       className="bg-white/95 backdrop-blur-xl rounded-4xl p-5 border border-white/60 shadow-2xl"
     >
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-nunito font-700 text-base text-purple-900">New Entry ✍️</h2>
+        <div>
+          <h2 className="font-nunito font-700 text-base text-purple-900">New Entry ✍️</h2>
+          {moodLabel && <p className="text-xs font-dm text-purple-400">Feeling {moodLabel} · {initialMood}/10</p>}
+        </div>
         <div className="flex items-center gap-2">
           <span className="text-xs font-dm text-purple-400">
             {new Date()?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
@@ -63,14 +88,13 @@ export default function DiaryEditor({ onClose }: DiaryEditorProps) {
           {onClose && (
             <button
               onClick={onClose}
-              className="w-7 h-7 rounded-xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-400 transition-colors"
+              className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-400 transition-colors"
             >
-              <X size={14} />
+              <X size={16} />
             </button>
           )}
         </div>
       </div>
-      {/* Writing prompt */}
       <motion.div
         key={promptIdx}
         initial={{ opacity: 0, x: 10 }}
@@ -83,13 +107,12 @@ export default function DiaryEditor({ onClose }: DiaryEditorProps) {
           </p>
           <button
             onClick={nextPrompt}
-            className="flex-shrink-0 w-6 h-6 rounded-lg bg-purple-100 hover:bg-purple-200 flex items-center justify-center text-purple-600 transition-colors text-sm"
+            className="flex-shrink-0 min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-purple-100 hover:bg-purple-200 flex items-center justify-center text-purple-600 transition-colors text-sm"
           >
             ✨
           </button>
         </div>
       </motion.div>
-      {/* Text area */}
       <textarea
         value={text}
         onChange={(e) => setText(e?.target?.value)}
@@ -104,9 +127,8 @@ export default function DiaryEditor({ onClose }: DiaryEditorProps) {
           whileTap={{ scale: 0.95 }}
           onClick={handleSave}
           disabled={isSaving}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-nunito font-700 text-sm transition-all ${
-            saved
-              ? 'bg-green-100 text-green-700 border border-green-200' :'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md hover:shadow-lg'
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-nunito font-700 text-sm transition-all min-h-[44px] ${
+            saved ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md hover:shadow-lg'
           }`}
         >
           {isSaving ? (
