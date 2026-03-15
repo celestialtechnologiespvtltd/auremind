@@ -137,7 +137,7 @@ export default function StreakTracker() {
         </div>
         <div className="flex gap-2 justify-between">
           {last7.map((day) => {
-            const isChecked = streak.checkinDays.includes(day);
+            const isChecked = streak.checkinDays?.includes(day) ?? false;
             const isToday = day === getDateKey(new Date());
             return (
               <div key={day} className="flex flex-col items-center gap-1.5 flex-1">
