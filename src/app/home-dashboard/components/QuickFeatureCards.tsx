@@ -23,7 +23,7 @@ const features = [
   {
     title: 'My Diary',
     desc: 'Track your journey',
-    emoji: '📖',
+    emoji: '📓',
     gradient: 'gradient-peach',
     path: '/mood-tracker-diary',
     textColor: 'text-pink-800',
@@ -31,7 +31,7 @@ const features = [
   {
     title: 'Motivation',
     desc: 'Daily quotes & sounds',
-    emoji: '✨',
+    emoji: '🌟',
     gradient: 'gradient-pink',
     path: '/daily-motivation',
     textColor: 'text-rose-800',
@@ -39,7 +39,7 @@ const features = [
   {
     title: 'Community',
     desc: 'Share & connect',
-    emoji: '🤝',
+    emoji: '🫂',
     gradient: 'gradient-green',
     path: '/community-section',
     textColor: 'text-green-800',

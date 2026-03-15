@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Play, Pause } from 'lucide-react';
 
 const sounds = [
-  { name: 'Rain Drops', emoji: '🌧️', gradient: 'gradient-blue', color: 'text-blue-800', duration: '∞', mood: 'Calming' },
+  { name: 'Rain Drops', emoji: '🌧', gradient: 'gradient-blue', color: 'text-blue-800', duration: '∞', mood: 'Calming' },
   { name: 'Ocean Waves', emoji: '🌊', gradient: 'gradient-lavender', color: 'text-purple-800', duration: '∞', mood: 'Relaxing' },
   { name: 'Calm Piano', emoji: '🎹', gradient: 'gradient-peach', color: 'text-pink-800', duration: '∞', mood: 'Peaceful' },
   { name: 'Forest Birds', emoji: '🌲', gradient: 'gradient-green', color: 'text-green-800', duration: '∞', mood: 'Grounding' },
@@ -17,7 +17,7 @@ export default function SoundCards() {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-nunito font-700 text-lg text-purple-900">Relaxing Sounds 🎵</h2>
+        <h2 className="font-nunito font-700 text-lg text-purple-900">Relaxing Sounds 🎶</h2>
         <span className="text-xs font-dm text-purple-400">Tap to play</span>
       </div>
       <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">

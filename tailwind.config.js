@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        nunito: ['Nunito', 'sans-serif'],
+        nunito: ['Plus Jakarta Sans', 'sans-serif'],
         dm: ['DM Sans', 'sans-serif'],
       },
       colors: {

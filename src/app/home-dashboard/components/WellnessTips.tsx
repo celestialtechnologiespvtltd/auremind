@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 const tips = [
   { emoji: '💧', tip: 'Drink 8 glasses of water today — hydration boosts mood by up to 30%', color: 'bg-blue-50 border-blue-100' },
   { emoji: '🚶', tip: 'A 10-minute walk outside can reduce anxiety as effectively as light exercise', color: 'bg-green-50 border-green-100' },
-  { emoji: '😴', tip: 'Try the 4-7-8 breathing technique before sleep for deeper rest', color: 'bg-purple-50 border-purple-100' },
+  { emoji: '🌙', tip: 'Try the 4-7-8 breathing technique before sleep for deeper rest', color: 'bg-purple-50 border-purple-100' },
   { emoji: '📵', tip: 'Put your phone away 30 minutes before bed to improve sleep quality', color: 'bg-pink-50 border-pink-100' },
-  { emoji: '🙏', tip: 'Writing 3 things you\'re grateful for each morning rewires your brain for positivity', color: 'bg-amber-50 border-amber-100' },
+  { emoji: '🌿', tip: 'Writing 3 things you\'re grateful for each morning rewires your brain for positivity', color: 'bg-amber-50 border-amber-100' },
 ];
 
 export default function WellnessTips() {

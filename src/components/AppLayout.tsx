@@ -51,7 +51,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 pb-28">
       {!hideHeader && (
-        <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-white/60 px-4 py-3">
+        <header className="fixed top-0 left-0 right-0 z-40 bg-white/70 backdrop-blur-xl border-b border-white/60 px-4 py-3">
           <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2">
               <AppLogo size={32} />
@@ -83,7 +83,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
         </header>
       )}
 
-      <main className="max-w-screen-2xl mx-auto px-4 py-4 xl:px-8 2xl:px-12">
+      <main className="max-w-screen-2xl mx-auto px-4 py-4 xl:px-8 2xl:px-12 pt-20">
         {children}
       </main>
       <BottomNav />
@@ -106,7 +106,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
               className="bg-white/95 backdrop-blur-xl rounded-4xl p-6 w-full max-w-sm border border-purple-100 shadow-2xl"
             >
               <div className="flex items-center justify-between mb-5">
-                <h2 className="font-nunito font-800 text-lg text-purple-900">Profile & Settings ⚙️</h2>
+                <h2 className="font-nunito font-800 text-lg text-purple-900">Profile & Settings ✦</h2>
                 <button
                   onClick={() => setShowSettings(false)}
                   className="w-8 h-8 rounded-xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-500 transition-colors"

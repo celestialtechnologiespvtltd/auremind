@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
-const moodEmojis = ['😔', '😕', '😐', '🙂', '😊', '😄'];
+const moodEmojis = ['🫥', '😔', '😶', '🙂', '😊', '🥰'];
 
 interface StreakInfo {
   count: number;
@@ -16,10 +16,10 @@ interface StreakInfo {
 
 function getStreakInfo(count: number): StreakInfo {
   if (count === 0) return { count, tag: 'Just Getting Started', tagColor: 'text-blue-700', tagBg: 'bg-blue-100/80 border-blue-200/50', icon: '🌱' };
-  if (count <= 2) return { count, tag: 'Keep it Up!', tagColor: 'text-purple-700', tagBg: 'bg-purple-100/80 border-purple-200/50', icon: '💪' };
+  if (count <= 2) return { count, tag: 'Keep it Up!', tagColor: 'text-purple-700', tagBg: 'bg-purple-100/80 border-purple-200/50', icon: '🪴' };
   if (count <= 4) return { count, tag: 'Growing Steadily', tagColor: 'text-green-700', tagBg: 'bg-green-100/80 border-green-200/50', icon: '🌿' };
   if (count <= 6) return { count, tag: 'On a Roll!', tagColor: 'text-orange-700', tagBg: 'bg-orange-100/80 border-orange-200/50', icon: '🔥' };
-  return { count, tag: 'Consistency King', tagColor: 'text-yellow-700', tagBg: 'bg-yellow-100/80 border-yellow-200/50', icon: '👑' };
+  return { count, tag: 'Consistency King', tagColor: 'text-yellow-700', tagBg: 'bg-yellow-100/80 border-yellow-200/50', icon: '✦' };
 }
 
 export default function HeroGreeting() {
@@ -34,7 +34,7 @@ export default function HeroGreeting() {
     const now = new Date();
     const hour = now.getHours();
     setGreeting(hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening');
-    setTimeEmoji(hour < 12 ? '🌅' : hour < 17 ? '☀️' : '🌙');
+    setTimeEmoji(hour < 12 ? '🌤' : hour < 17 ? '☀️' : '🌙');
     setDateString(now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }));
 
     const stored = localStorage.getItem('mindbloom_user');
