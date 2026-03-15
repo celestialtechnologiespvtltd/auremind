@@ -134,7 +134,7 @@ export default function HeroGreeting() {
     const newCurrentStreak = streak.lastCheckin === yesterday ? streak.currentStreak + 1 : 1;
     const newBestStreak = Math.max(newCurrentStreak, streak.bestStreak);
     const newCheckinDays = [
-      ...streak.checkinDays.filter(d => {
+      ...(streak.checkinDays || []).filter(d => {
         const diff = (new Date(today).getTime() - new Date(d).getTime()) / 86400000;
         return diff <= 30;
       }),
