@@ -4,7 +4,13 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
-const moodEmojis = ['🫥', '😔', '😶', '🙂', '😊', '🥰'];
+const moodEmojis = [
+  { emoji: '😢', label: 'Very Sad' },
+  { emoji: '😔', label: 'Sad' },
+  { emoji: '😐', label: 'Neutral' },
+  { emoji: '🙂', label: 'Good' },
+  { emoji: '😄', label: 'Happy' },
+];
 
 interface StreakInfo {
   count: number;
@@ -25,6 +31,7 @@ function getStreakInfo(count: number): StreakInfo {
 export default function HeroGreeting() {
   const router = useRouter();
   const [username, setUsername] = useState('');
+  const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [streakDays, setStreakDays] = useState<boolean[]>([false, false, false, false, false, false, false]);
   const [greeting, setGreeting] = useState('Good Morning');
   const [timeEmoji, setTimeEmoji] = useState('🌅');
@@ -92,16 +99,23 @@ export default function HeroGreeting() {
         {/* Quick mood check */}
         <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-4 border border-white/60">
           <p className="text-xs font-nunito font-600 text-purple-700 mb-3 uppercase tracking-wide">Quick Mood Check</p>
-          <div className="flex items-center justify-between">
-            {moodEmojis?.map((emoji, i) => (
+          <div className="flex items-center justify-around">
+            {moodEmojis?.map((item, i) => (
               <motion.button
                 key={i}
-                whileTap={{ scale: 0.8 }}
-                whileHover={{ scale: 1.2 }}
-                onClick={() => router?.push('/mood-tracker-diary')}
-                className="w-10 h-10 rounded-2xl bg-white/60 flex items-center justify-center text-xl hover:bg-white/90 transition-all shadow-sm border border-white/40"
+                whileTap={{ scale: 0.9 }}
+                animate={selectedMood === i ? { scale: 1.2 } : { scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+                onClick={() => {
+                  setSelectedMood(i);
+                  localStorage.setItem('mindbloom_quick_mood', JSON.stringify({ index: i, label: item.label, emoji: item.emoji }));
+                }}
+                className="flex flex-col items-center gap-1 bg-transparent border-0 outline-none cursor-pointer p-1"
+                style={{
+                  filter: selectedMood === i ? 'drop-shadow(0 0 8px rgba(168, 85, 247, 0.6))' : 'none',
+                }}
               >
-                {emoji}
+                <span style={{ fontSize: '36px', lineHeight: 1 }}>{item.emoji}</span>
               </motion.button>
             ))}
           </div>
