@@ -40,6 +40,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
   const pathname = usePathname();
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
+  const isHomePage = pathname === '/home-dashboard';
 
   useEffect(() => {
     const stored = localStorage.getItem('mindbloom_user');
@@ -141,7 +142,8 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
             </div>
 
             {/* Right actions */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {/* Hamburger menu button */}
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setShowMenu(v => !v)}
@@ -150,10 +152,32 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
               >
                 <Menu size={18} />
               </motion.button>
+
+              {/* Settings & Notifications — only on homepage */}
+              {isHomePage && (
+                <>
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => { requestNotifications(); }}
+                    className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-2xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center transition-colors"
+                    aria-label="Notifications"
+                  >
+                    <Bell size={18} className={notifGranted ? 'text-green-500' : 'text-purple-500'} />
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowSettings(true)}
+                    className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-2xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-500 transition-colors"
+                    aria-label="Settings"
+                  >
+                    <Settings size={18} />
+                  </motion.button>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Slide-down menu: Notifications first, Settings second, then nav links */}
+          {/* Slide-down menu: nav links only (Settings & Notifications moved to header) */}
           <AnimatePresence>
             {showMenu && (
               <motion.div
@@ -164,29 +188,6 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                 className="overflow-hidden border-t border-purple-100/60 bg-white/95 backdrop-blur-xl"
               >
                 <nav className="max-w-screen-2xl mx-auto px-4 py-3 flex flex-col gap-1">
-                  {/* Notifications button */}
-                  <motion.button
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => { requestNotifications(); setShowMenu(false); }}
-                    className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-nunito font-600 transition-all duration-200 text-left w-full text-purple-500 hover:bg-purple-50 hover:text-purple-700 min-h-[44px]"
-                  >
-                    <Bell size={18} className={notifGranted ? 'text-green-500' : 'text-purple-400'} />
-                    <span>Notifications</span>
-                    {notifGranted && <span className="ml-auto text-xs text-green-500 font-dm">Enabled</span>}
-                  </motion.button>
-
-                  {/* Settings button */}
-                  <motion.button
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => { setShowSettings(true); setShowMenu(false); }}
-                    className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-nunito font-600 transition-all duration-200 text-left w-full text-purple-500 hover:bg-purple-50 hover:text-purple-700 min-h-[44px]"
-                  >
-                    <Settings size={18} className="text-purple-400" />
-                    <span>Settings</span>
-                  </motion.button>
-
-                  <div className="h-px bg-purple-100/60 my-1" />
-
                   {/* Nav links */}
                   {navItems.map((item) => {
                     const isActive = pathname === item.path;

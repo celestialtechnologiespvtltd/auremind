@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PenLine } from 'lucide-react';
 import DiaryEditor from './DiaryEditor';
@@ -18,10 +18,19 @@ const moodData = [
   { value: 10, emoji: '🥳', label: 'Ecstatic', color: 'from-green-200 to-emerald-200' },
 ];
 
-export default function MoodInput() {
-  const [mood, setMood] = useState(6);
+interface MoodInputProps {
+  onNoteSaved?: () => void;
+}
+
+export default function MoodInput({ onNoteSaved }: MoodInputProps) {
+  const [mood, setMood] = useState(1);
   const [showEditor, setShowEditor] = useState(false);
   const [pendingMood, setPendingMood] = useState<number | null>(null);
+
+  // Reset slider to 1 every time component mounts
+  useEffect(() => {
+    setMood(1);
+  }, []);
 
   const current = moodData?.[mood - 1];
 
@@ -30,7 +39,6 @@ export default function MoodInput() {
   };
 
   const handleSliderRelease = useCallback(() => {
-    // Save mood to localStorage
     try {
       const entries = JSON.parse(localStorage.getItem('mindbloom_mood_entries') || '[]');
       const today = new Date().toISOString().split('T')[0];
@@ -40,10 +48,14 @@ export default function MoodInput() {
       else entries.unshift(entry);
       localStorage.setItem('mindbloom_mood_entries', JSON.stringify(entries.slice(0, 90)));
     } catch {}
-    // Open note editor with current mood pre-filled
     setPendingMood(mood);
     setShowEditor(true);
   }, [mood]);
+
+  const handleClose = useCallback(() => {
+    setShowEditor(false);
+    onNoteSaved?.();
+  }, [onNoteSaved]);
 
   return (
     <>
@@ -53,7 +65,6 @@ export default function MoodInput() {
         className="bg-white/70 backdrop-blur-sm rounded-4xl p-5 border border-white/60 shadow-md"
       >
         <h2 className="font-nunito font-700 text-base text-purple-900 mb-4">How are you feeling?</h2>
-        {/* Emoji display */}
         <div className="flex flex-col items-center mb-5">
           <motion.div
             key={mood}
@@ -75,7 +86,6 @@ export default function MoodInput() {
           <p className="font-dm text-purple-400 text-sm">{mood}/10</p>
         </div>
 
-        {/* Mood slider — release opens note editor */}
         <div className="mb-4">
           <input
             type="range"
@@ -96,7 +106,6 @@ export default function MoodInput() {
           </div>
         </div>
 
-        {/* Create Note button inside the mood section */}
         <motion.button
           whileTap={{ scale: 0.97 }}
           whileHover={{ scale: 1.01 }}
@@ -109,7 +118,6 @@ export default function MoodInput() {
         <p className="text-center text-xs font-dm text-purple-400 mt-2">Slide to set mood, then note opens automatically</p>
       </motion.div>
 
-      {/* Diary editor modal */}
       <AnimatePresence>
         {showEditor && (
           <motion.div
@@ -117,7 +125,7 @@ export default function MoodInput() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-end sm:items-center justify-center p-4"
-            onClick={(e) => { if (e?.target === e?.currentTarget) setShowEditor(false); }}
+            onClick={(e) => { if (e?.target === e?.currentTarget) handleClose(); }}
           >
             <motion.div
               initial={{ y: 60, opacity: 0 }}
@@ -127,7 +135,7 @@ export default function MoodInput() {
               className="w-full max-w-lg"
             >
               <DiaryEditor
-                onClose={() => setShowEditor(false)}
+                onClose={handleClose}
                 initialMood={pendingMood ?? mood}
                 moodLabel={moodData[(pendingMood ?? mood) - 1]?.label}
               />

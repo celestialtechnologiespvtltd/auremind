@@ -1,12 +1,14 @@
 'use client';
 
-
+import { useState } from 'react';
 import AppLayout from '@/components/AppLayout';
 import MoodInput from './components/MoodInput';
 import WeeklyMoodChart from './components/WeeklyMoodChart';
 import PastEntries from './components/PastEntries';
 
 export default function MoodTrackerDiaryPage() {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   return (
     <AppLayout>
       <div className="space-y-6 py-2">
@@ -17,11 +19,10 @@ export default function MoodTrackerDiaryPage() {
           </p>
         </div>
 
-        {/* Mood input with integrated Create Note button */}
-        <MoodInput />
+        <MoodInput onNoteSaved={() => setRefreshTrigger(t => t + 1)} />
 
         <WeeklyMoodChart />
-        <PastEntries />
+        <PastEntries refreshTrigger={refreshTrigger} />
       </div>
     </AppLayout>
   );
