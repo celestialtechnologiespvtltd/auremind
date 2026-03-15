@@ -83,7 +83,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
             </div>
 
             {/* Top Navigation Links */}
-            <nav className="flex items-center gap-1 flex-1 justify-center">
+            <nav className="flex items-center gap-0.5 sm:gap-1 flex-1 justify-center overflow-x-auto scrollbar-hide flex-nowrap">
               {navItems.map((item) => {
                 const isActive = pathname === item.path;
                 return (
@@ -91,14 +91,14 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                     key={item.path}
                     onClick={() => router.push(item.path)}
                     whileTap={{ scale: 0.93 }}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-sm font-nunito font-600 transition-all duration-200 ${
+                    className={`flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-2xl text-[13px] sm:text-sm font-nunito font-600 transition-all duration-200 flex-shrink-0 ${
                       isActive
                         ? 'bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 shadow-sm'
                         : 'text-purple-400 hover:text-purple-600 hover:bg-purple-50'
                     }`}
                   >
-                    <span className="text-base">{item.emoji}</span>
-                    <span className="hidden md:block">{item.label}</span>
+                    <span className="text-[18px] sm:text-base leading-none">{item.emoji}</span>
+                    <span className="text-[13px] sm:text-sm">{item.label}</span>
                   </motion.button>
                 );
               })}
