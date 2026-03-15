@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '../styles/tailwind.css';
 import { Toaster } from 'sonner';
+import OnboardingModal from '@/components/OnboardingModal';
 
 export const metadata: Metadata = {
   title: 'MindBloom — Your Mental Wellness Companion',
@@ -11,6 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="font-dm antialiased">
+        <OnboardingModal />
         {children}
         <Toaster
           position="top-center"

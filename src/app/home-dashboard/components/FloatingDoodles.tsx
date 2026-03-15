@@ -20,7 +20,7 @@ export default function FloatingDoodles() {
           className={`absolute ${d.size} opacity-30`}
           style={{ top: d.top, left: (d as any).left, right: (d as any).right }}
           animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 3 + i * 0.4, repeat: Infinity, delay: d.delay, ease: 'easeInOut' }}
+          transition={{ duration: 4, repeat: Infinity, delay: d.delay, ease: 'easeInOut' }}
         >
           {d.emoji}
         </motion.div>

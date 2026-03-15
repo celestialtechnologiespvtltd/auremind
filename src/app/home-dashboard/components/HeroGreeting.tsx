@@ -1,15 +1,55 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 const moodEmojis = ['😔', '😕', '😐', '🙂', '😊', '😄'];
+
+interface StreakInfo {
+  count: number;
+  tag: string;
+  tagColor: string;
+  tagBg: string;
+  icon: string;
+}
+
+function getStreakInfo(count: number): StreakInfo {
+  if (count === 0) return { count, tag: 'Just Getting Started', tagColor: 'text-blue-700', tagBg: 'bg-blue-100/80 border-blue-200/50', icon: '🌱' };
+  if (count <= 2) return { count, tag: 'Keep it Up!', tagColor: 'text-purple-700', tagBg: 'bg-purple-100/80 border-purple-200/50', icon: '💪' };
+  if (count <= 4) return { count, tag: 'Growing Steadily', tagColor: 'text-green-700', tagBg: 'bg-green-100/80 border-green-200/50', icon: '🌿' };
+  if (count <= 6) return { count, tag: 'On a Roll!', tagColor: 'text-orange-700', tagBg: 'bg-orange-100/80 border-orange-200/50', icon: '🔥' };
+  return { count, tag: 'Consistency King', tagColor: 'text-yellow-700', tagBg: 'bg-yellow-100/80 border-yellow-200/50', icon: '👑' };
+}
 
 export default function HeroGreeting() {
   const router = useRouter();
   const hour = new Date()?.getHours();
   const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
   const timeEmoji = hour < 12 ? '🌅' : hour < 17 ? '☀️' : '🌙';
+  const [username, setUsername] = useState('');
+  const [streakDays, setStreakDays] = useState<boolean[]>([false, false, false, false, false, false, false]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('mindbloom_user');
+    if (stored) {
+      try { setUsername(JSON.parse(stored).username || ''); } catch {}
+    }
+    // Simulate past 7 days streak from localStorage
+    const streakData = localStorage.getItem('mindbloom_streak');
+    if (streakData) {
+      try { setStreakDays(JSON.parse(streakData)); } catch {}
+    } else {
+      // Default demo: 5 days checked in
+      const demo = [true, true, true, true, true, false, false];
+      setStreakDays(demo);
+      localStorage.setItem('mindbloom_streak', JSON.stringify(demo));
+    }
+  }, []);
+
+  const checkedCount = streakDays.filter(Boolean).length;
+  const streakInfo = getStreakInfo(checkedCount);
+  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   return (
     <motion.div
@@ -28,15 +68,19 @@ export default function HeroGreeting() {
               {timeEmoji} {new Date()?.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
             <h1 className="font-nunito text-2xl font-800 text-purple-900 leading-tight">
-              {greeting}, Aria! 🌸
+              {greeting}{username ? `, ${username}` : ''}! 🌸
             </h1>
             <p className="text-purple-600 text-sm mt-1 font-dm">
               How are you feeling today?
             </p>
           </div>
-          <div className="w-16 h-16 rounded-3xl gradient-lavender flex items-center justify-center text-3xl shadow-md border border-white/60 float-doodle">
+          <motion.div
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-16 h-16 rounded-3xl gradient-lavender flex items-center justify-center text-3xl shadow-md border border-white/60"
+          >
             🧠
-          </div>
+          </motion.div>
         </div>
 
         {/* Quick mood check */}
@@ -57,16 +101,36 @@ export default function HeroGreeting() {
           </div>
         </div>
 
-        {/* Streak */}
-        <div className="flex items-center gap-3 mt-4">
-          <div className="flex items-center gap-1.5 bg-orange-100/80 rounded-2xl px-3 py-1.5 border border-orange-200/50">
-            <span className="text-base">🔥</span>
-            <span className="text-xs font-nunito font-700 text-orange-700">7 day streak</span>
+        {/* 7-day streak status */}
+        <div className="mt-4 bg-white/40 backdrop-blur-sm rounded-3xl p-4 border border-white/60">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-nunito font-700 text-purple-700 uppercase tracking-wide">Past 7 Days</p>
+            <motion.div
+              animate={{ y: [0, -12, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-2xl border text-xs font-nunito font-700 ${streakInfo.tagBg} ${streakInfo.tagColor}`}
+            >
+              <span>{streakInfo.icon}</span>
+              <span>{streakInfo.tag}</span>
+            </motion.div>
           </div>
-          <div className="flex items-center gap-1.5 bg-green-100/80 rounded-2xl px-3 py-1.5 border border-green-200/50">
-            <span className="text-base">🌱</span>
-            <span className="text-xs font-nunito font-700 text-green-700">Growing steadily</span>
+          <div className="flex items-center justify-between gap-1">
+            {streakDays.map((checked, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm transition-all ${
+                  checked
+                    ? 'bg-gradient-to-br from-purple-400 to-pink-400 text-white shadow-sm'
+                    : 'bg-white/50 text-purple-200 border border-purple-100/40'
+                }`}>
+                  {checked ? '✓' : '·'}
+                </div>
+                <span className="text-[9px] font-dm text-purple-400">{dayLabels[i]}</span>
+              </div>
+            ))}
           </div>
+          <p className="text-xs font-dm text-purple-500 mt-2 text-center">
+            {checkedCount}/7 days checked in 🌟
+          </p>
         </div>
       </div>
     </motion.div>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { Save, Sparkles } from 'lucide-react';
+import { Save, Sparkles, X } from 'lucide-react';
 
 const prompts = [
   "What made you smile today, even just a little?",
@@ -11,9 +11,15 @@ const prompts = [
   "What\'s one thing you\'d like to let go of today?",
   "Who or what are you grateful for right now?",
   "What does your body need most today?",
+  "What emotion am I carrying right now, and where do I feel it?",
+  "What would I tell a friend going through what I\'m experiencing?",
 ];
 
-export default function DiaryEditor() {
+interface DiaryEditorProps {
+  onClose?: () => void;
+}
+
+export default function DiaryEditor({ onClose }: DiaryEditorProps) {
   const [text, setText] = useState('');
   const [promptIdx, setPromptIdx] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
@@ -25,12 +31,14 @@ export default function DiaryEditor() {
       return;
     }
     setIsSaving(true);
-    // Backend: POST /api/diary-entries with { text, mood, tags, date }
     setTimeout(() => {
       setIsSaving(false);
       setSaved(true);
       toast?.success('Diary entry saved! 🌸');
-      setTimeout(() => setSaved(false), 3000);
+      setTimeout(() => {
+        setSaved(false);
+        onClose?.();
+      }, 1500);
     }, 1000);
   };
 
@@ -40,16 +48,27 @@ export default function DiaryEditor() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 }}
-      className="bg-white/70 backdrop-blur-sm rounded-4xl p-5 border border-white/60 shadow-md"
+      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95, y: 20 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+      className="bg-white/95 backdrop-blur-xl rounded-4xl p-5 border border-white/60 shadow-2xl"
     >
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-nunito font-700 text-base text-purple-900">Today's Entry ✍️</h2>
-        <span className="text-xs font-dm text-purple-400">
-          {new Date()?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-        </span>
+        <h2 className="font-nunito font-700 text-base text-purple-900">New Entry ✍️</h2>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-dm text-purple-400">
+            {new Date()?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+          </span>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="w-7 h-7 rounded-xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-400 transition-colors"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
       </div>
       {/* Writing prompt */}
       <motion.div
@@ -75,8 +94,9 @@ export default function DiaryEditor() {
         value={text}
         onChange={(e) => setText(e?.target?.value)}
         placeholder="Start writing... this is your safe space 🌸"
-        rows={6}
+        rows={7}
         className="w-full bg-purple-50/50 rounded-2xl p-4 text-sm font-dm text-purple-900 placeholder-purple-300 border border-purple-100/60 outline-none resize-none focus:ring-2 focus:ring-purple-200 transition-all leading-relaxed"
+        autoFocus
       />
       <div className="flex items-center justify-between mt-3">
         <p className="text-xs font-dm text-purple-400">{text?.length} characters</p>
