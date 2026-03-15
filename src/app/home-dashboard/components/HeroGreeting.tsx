@@ -5,11 +5,14 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 const moodEmojis = [
-  { emoji: '😢', label: 'Very Sad' },
-  { emoji: '😔', label: 'Sad' },
+  { emoji: '😀', label: 'Happy' },
+  { emoji: '😍', label: 'Love' },
+  { emoji: '🤩', label: 'Excited' },
+  { emoji: '😅', label: 'Relieved' },
+  { emoji: '😜', label: 'Playful' },
   { emoji: '😐', label: 'Neutral' },
-  { emoji: '🙂', label: 'Good' },
-  { emoji: '😄', label: 'Happy' },
+  { emoji: '😢', label: 'Sad' },
+  { emoji: '😭', label: 'Very Sad' },
 ];
 
 interface StreakInfo {
@@ -99,23 +102,44 @@ export default function HeroGreeting() {
         {/* Quick mood check */}
         <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-4 border border-white/60">
           <p className="text-xs font-nunito font-600 text-purple-700 mb-3 uppercase tracking-wide">Quick Mood Check</p>
-          <div className="flex items-center justify-around">
+          <div className="flex items-center justify-around flex-wrap gap-y-3">
             {moodEmojis?.map((item, i) => (
               <motion.button
                 key={i}
                 whileTap={{ scale: 0.9 }}
-                animate={selectedMood === i ? { scale: 1.2 } : { scale: 1 }}
+                animate={selectedMood === i ? { scale: 1.1 } : { scale: 1 }}
                 transition={{ type: 'spring', stiffness: 300 }}
                 onClick={() => {
                   setSelectedMood(i);
                   localStorage.setItem('mindbloom_quick_mood', JSON.stringify({ index: i, label: item.label, emoji: item.emoji }));
                 }}
-                className="flex flex-col items-center gap-1 bg-transparent border-0 outline-none cursor-pointer p-1"
-                style={{
-                  filter: selectedMood === i ? 'drop-shadow(0 0 8px rgba(168, 85, 247, 0.6))' : 'none',
-                }}
+                className="flex flex-col items-center gap-1.5 bg-transparent border-0 outline-none cursor-pointer"
               >
-                <span style={{ fontSize: '36px', lineHeight: 1 }}>{item.emoji}</span>
+                <div
+                  style={{
+                    width: '52px',
+                    height: '52px',
+                    borderRadius: '50%',
+                    background: selectedMood === i
+                      ? 'radial-gradient(circle at 35% 35%, #FFE566, #FFD000 60%, #FFC200)'
+                      : 'radial-gradient(circle at 35% 35%, #FFF176, #FFE135 55%, #FFD000)',
+                    border: selectedMood === i ? '2px solid #C0C0C0' : '1.5px solid #D4D4D4',
+                    boxShadow: selectedMood === i
+                      ? '0 0 0 3px rgba(168,85,247,0.35), 0 4px 12px rgba(255,200,0,0.45), 0 2px 6px rgba(0,0,0,0.12)'
+                      : '0 3px 8px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '28px',
+                    lineHeight: 1,
+                    transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
+                  }}
+                >
+                  {item.emoji}
+                </div>
+                <span className={`text-xs font-nunito font-600 ${selectedMood === i ? 'text-purple-700' : 'text-purple-500/70'}`}>
+                  {item.label}
+                </span>
               </motion.button>
             ))}
           </div>
