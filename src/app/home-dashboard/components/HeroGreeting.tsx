@@ -24,13 +24,19 @@ function getStreakInfo(count: number): StreakInfo {
 
 export default function HeroGreeting() {
   const router = useRouter();
-  const hour = new Date()?.getHours();
-  const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
-  const timeEmoji = hour < 12 ? '🌅' : hour < 17 ? '☀️' : '🌙';
   const [username, setUsername] = useState('');
   const [streakDays, setStreakDays] = useState<boolean[]>([false, false, false, false, false, false, false]);
+  const [greeting, setGreeting] = useState('Good Morning');
+  const [timeEmoji, setTimeEmoji] = useState('🌅');
+  const [dateString, setDateString] = useState('');
 
   useEffect(() => {
+    const now = new Date();
+    const hour = now.getHours();
+    setGreeting(hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening');
+    setTimeEmoji(hour < 12 ? '🌅' : hour < 17 ? '☀️' : '🌙');
+    setDateString(now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }));
+
     const stored = localStorage.getItem('mindbloom_user');
     if (stored) {
       try { setUsername(JSON.parse(stored).username || ''); } catch {}
@@ -65,7 +71,7 @@ export default function HeroGreeting() {
         <div className="flex items-start justify-between mb-4">
           <div>
             <p className="text-sm font-dm text-purple-500 mb-0.5">
-              {timeEmoji} {new Date()?.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              {timeEmoji} {dateString}
             </p>
             <h1 className="font-nunito text-2xl font-800 text-purple-900 leading-tight">
               {greeting}{username ? `, ${username}` : ''}! 🌸
