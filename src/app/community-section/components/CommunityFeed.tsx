@@ -309,21 +309,6 @@ export default function CommunityFeed() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-3 sm:space-y-4"
           >
-            {/* Post composer trigger */}
-            <motion.div
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setShowComposer(true)}
-              className="bg-white/70 backdrop-blur-sm rounded-3xl p-3 sm:p-4 border border-white/60 shadow-sm cursor-pointer flex items-center gap-3"
-            >
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl gradient-lavender flex items-center justify-center text-lg sm:text-xl border border-white/60 flex-shrink-0">
-                🌸
-              </div>
-              <p className="text-sm font-dm text-purple-400 flex-1 truncate">Share something with the community...</p>
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0">
-                <Send size={14} className="text-white" />
-              </div>
-            </motion.div>
-
             {/* Share Your Experience Card */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -368,6 +353,21 @@ export default function CommunityFeed() {
                   ) : <Send size={14} />}
                   {isSharing ? 'Posting...' : 'Post to Community'}
                 </motion.button>
+              </div>
+            </motion.div>
+
+            {/* Post composer trigger */}
+            <motion.div
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowComposer(true)}
+              className="bg-white/70 backdrop-blur-sm rounded-3xl p-3 sm:p-4 border border-white/60 shadow-sm cursor-pointer flex items-center gap-3"
+            >
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl gradient-lavender flex items-center justify-center text-lg sm:text-xl border border-white/60 flex-shrink-0">
+                🌸
+              </div>
+              <p className="text-sm font-dm text-purple-400 flex-1 truncate">Share something with the community...</p>
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0">
+                <Send size={14} className="text-white" />
               </div>
             </motion.div>
 
