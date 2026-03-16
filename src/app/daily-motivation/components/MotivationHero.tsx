@@ -169,19 +169,6 @@ export default function MotivationHero() {
               ← swipe to browse quotes →
             </p>
 
-            {/* Dot indicators */}
-            <div className="flex gap-1.5 mt-4 flex-wrap">
-              {quotes.slice(0, 10).map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => { setDirection(i > idx ? 'left' : 'right'); setIdx(i); }}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'bg-purple-500 w-6' : 'bg-purple-300/50 w-1.5'}`}
-                />
-              ))}
-              {idx >= 10 && (
-                <div className="h-1.5 w-6 rounded-full bg-pink-400" />
-              )}
-            </div>
           </div>
         </motion.div>
       </AnimatePresence>
