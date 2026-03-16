@@ -34,7 +34,7 @@ const features = [
     type: 'diary',
   },
   {
-    title: 'Motivation',
+    title: 'Wellness',
     desc: 'Daily quotes & sounds',
     emoji: '✨',
     gradient: 'gradient-pink',

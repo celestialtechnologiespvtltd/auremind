@@ -164,7 +164,7 @@ export default function IntroPage() {
           {/* Logo image */}
           <div className="flex justify-center mb-4">
             <img
-              src="/assets/images/ChatGPT_Image_Mar_16__2026__04_44_37_PM-1773661537529.png"
+              src="/assets/images/ChatGPT_Image_Mar_16_2026_04_44_37_PM-1773661537529.png"
               alt="AureMind logo"
               style={{ width: '620px', height: '620px', objectFit: 'contain' }}
             />
