@@ -254,7 +254,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                     className={`relative flex items-center gap-1.5 px-4 py-2 rounded-2xl text-sm font-nunito font-700 transition-all duration-200 ${
                     isActive ?
                     'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md shadow-purple-200' :
-                    'text-purple-600 hover:bg-white/70 hover:text-purple-800 hover:shadow-sm'}`
+                    'text-purple-600 hover:bg-white/70 hover:text-purple-800'}`
                     }>
 
                       <Icon size={15} className={isActive ? 'text-white' : 'text-purple-400'} />
@@ -345,26 +345,6 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                       </motion.button>);
 
               })}
-
-                  {/* Settings & Notifications in mobile menu (home page only) */}
-                  {isHomePage &&
-              <div className="flex gap-2 pt-1 pb-1 border-t border-purple-100/60 mt-1">
-                      <button
-                  onClick={() => {setShowMobileMenu(false);handleEnableNotifications();}}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-purple-50 text-purple-600 font-nunito font-700 text-sm hover:bg-purple-100 transition-colors">
-
-                        <Bell size={15} className={notifGranted ? 'text-green-500' : 'text-purple-500'} />
-                        <span>Notifications</span>
-                      </button>
-                      <button
-                  onClick={() => {setShowMobileMenu(false);setShowSettings(true);}}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-purple-50 text-purple-600 font-nunito font-700 text-sm hover:bg-purple-100 transition-colors">
-
-                        <Settings size={15} />
-                        <span>Settings</span>
-                      </button>
-                    </div>
-              }
                 </nav>
               </motion.div>
           }
@@ -482,8 +462,8 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
 
                     <div className="bg-white/70 rounded-3xl border border-purple-100/60 overflow-hidden">
                       <button
-                    onClick={toggleUsernameVisibility}
-                    className="w-full flex items-center gap-3 p-4 hover:bg-purple-50/50 transition-colors min-h-[44px]">
+                onClick={toggleUsernameVisibility}
+                className="w-full flex items-center gap-3 p-4 hover:bg-purple-50/50 transition-colors min-h-[44px]">
 
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${usernamePublic ? 'bg-purple-100' : 'bg-gray-100'}`}>
                           {usernamePublic ? <Eye size={16} className="text-purple-600" /> : <EyeOff size={16} className="text-gray-400" />}
