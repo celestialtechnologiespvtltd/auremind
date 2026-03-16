@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
+import { BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const quotes = [
   { text: "You don't have to be positive all the time. It's perfectly okay to feel sad, angry, annoyed, or overwhelmed.", author: 'Lori Deschene', category: 'Acceptance', emoji: '🌧️', gradient: 'from-blue-100 via-purple-100 to-pink-100' },
@@ -44,7 +44,6 @@ const quotes = [
 
 export default function MotivationHero() {
   const [idx, setIdx] = useState(0);
-  const [liked, setLiked] = useState<number[]>([]);
   const [direction, setDirection] = useState<'left' | 'right'>('left');
   const [savedMsg, setSavedMsg] = useState('');
 
@@ -53,7 +52,6 @@ export default function MotivationHero() {
   const touchStartY = useRef<number | null>(null);
 
   const q = quotes[idx];
-  const isLiked = liked.includes(idx);
 
   const goNext = useCallback(() => {
     setDirection('left');
@@ -74,21 +72,12 @@ export default function MotivationHero() {
     if (touchStartX.current === null || touchStartY.current === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
     const dy = e.changedTouches[0].clientY - touchStartY.current;
-    // Only trigger if horizontal swipe is dominant
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-      if (dx < 0) goNext(); // swipe left = next
-      else goPrev();        // swipe right = prev
+      if (dx < 0) goNext();
+      else goPrev();
     }
     touchStartX.current = null;
     touchStartY.current = null;
-  };
-
-  const toggleLike = () => {
-    setLiked(prev => isLiked ? prev.filter(i => i !== idx) : [...prev, idx]);
-    if (!isLiked) {
-      setSavedMsg('Quote saved to your favourites 💜');
-      setTimeout(() => setSavedMsg(''), 2000);
-    }
   };
 
   const saveToJournal = () => {
@@ -166,13 +155,6 @@ export default function MotivationHero() {
                   className="w-8 h-8 rounded-xl bg-white/50 hover:bg-white/80 flex items-center justify-center text-purple-600 transition-all"
                 >
                   <BookOpen size={15} />
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.85 }}
-                  onClick={toggleLike}
-                  className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${isLiked ? 'bg-pink-200 text-pink-600' : 'bg-white/50 text-purple-400 hover:bg-white/80'}`}
-                >
-                  <Heart size={15} fill={isLiked ? 'currentColor' : 'none'} />
                 </motion.button>
               </div>
             </div>
