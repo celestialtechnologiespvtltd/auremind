@@ -1,7 +1,6 @@
 'use client';
 
 import AppLayout from '@/components/AppLayout';
-import MotivationHero from './components/MotivationHero';
 import ExerciseCards from './components/ExerciseCards';
 import WellnessSoundCards from './components/WellnessSoundCards';
 import WellnessTipsList from './components/WellnessTipsList';
@@ -16,7 +15,6 @@ export default function DailyMotivationPage() {
             {new Date()?.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
         </div>
-        <MotivationHero />
         <ExerciseCards />
         <WellnessSoundCards />
         <WellnessTipsList />
