@@ -184,7 +184,7 @@ export default function OnboardingModal() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                 >
-                  <p className="font-nunito font-700 text-base text-purple-800 mb-1">Name your community 🌱</p>
+                  <p className="font-nunito font-700 text-base text-purple-800 mb-1">What should people call you?</p>
                   <p className="text-xs font-dm text-purple-400 mb-4">This is your community display name — be creative! (e.g. "Mindful Mornings")</p>
                   <input
                     type="text"
