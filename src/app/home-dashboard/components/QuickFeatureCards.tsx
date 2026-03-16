@@ -65,7 +65,7 @@ const features = [
 // Self Care: floating breath circles
 function SelfCareAnimation() {
   return (
-    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none flex items-center justify-center">
+    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none flex items-center justify-center">
       {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
@@ -83,7 +83,7 @@ function SelfCareAnimation() {
 function MindTestAnimation() {
   const sparks = ['💡', '⚡', '✦'];
   return (
-    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
       {sparks.map((s, i) => (
         <motion.span
           key={i}
@@ -103,7 +103,7 @@ function MindTestAnimation() {
 function DiaryAnimation() {
   const dots = Array.from({ length: 6 }, (_, i) => i);
   return (
-    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
       {dots.map((i) => (
         <motion.div
           key={i}
@@ -126,7 +126,7 @@ function DiaryAnimation() {
 function MotivationAnimation() {
   const stars = ['✨', '⭐', '🌟'];
   return (
-    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
       {stars.map((s, i) => (
         <motion.span
           key={i}
@@ -145,7 +145,7 @@ function MotivationAnimation() {
 // Community: floating heart / connection pulses
 function CommunityAnimation() {
   return (
-    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
       {['💚', '🤝', '💬'].map((e, i) => (
         <motion.span
           key={i}
@@ -164,7 +164,7 @@ function CommunityAnimation() {
 // Consult: gentle wave / speech bubble ripple
 function ConsultAnimation() {
   return (
-    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none flex items-center justify-center">
+    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none flex items-center justify-center">
       {[0, 1].map((i) => (
         <motion.div
           key={i}
@@ -275,7 +275,7 @@ const QuickFeatureCards = memo(function QuickFeatureCards() {
               onFocus={() => setActiveCard(i)}
               onBlur={() => setActiveCard(null)}
               onClick={() => router.push(f.path)}
-              className={`relative ${f.gradient} rounded-3xl p-4 flex flex-col items-center gap-2 shadow-sm border border-white/60 cursor-pointer transition-all duration-300 overflow-hidden flex-shrink-0 min-h-[44px] ${activeCard === i ? 'ring-2 ring-purple-300 shadow-lg' : ''}`}
+              className={`relative ${f.gradient} rounded-lg p-4 flex flex-col items-center gap-2 shadow-sm border border-white/60 cursor-pointer transition-all duration-300 overflow-hidden flex-shrink-0 min-h-[44px] ${activeCard === i ? 'ring-2 ring-purple-300 shadow-lg' : ''}`}
               style={{ width: `calc((100% - ${(VISIBLE_COUNT - 1) * 12}px) / ${VISIBLE_COUNT})`, minWidth: '90px' }}
             >
               <AnimatePresence>
@@ -298,17 +298,6 @@ const QuickFeatureCards = memo(function QuickFeatureCards() {
         </motion.div>
       </div>
 
-      {/* Dot indicators */}
-      <div className="flex justify-center gap-1.5 mt-3">
-        {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentIndex(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className={`rounded-full transition-all duration-300 ${i === currentIndex ? 'w-4 h-1.5 bg-purple-400' : 'w-1.5 h-1.5 bg-purple-200'}`}
-          />
-        ))}
-      </div>
     </div>
   );
 });
