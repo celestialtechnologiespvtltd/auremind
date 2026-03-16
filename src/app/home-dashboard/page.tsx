@@ -1,14 +1,25 @@
-import { Suspense, lazy } from 'react';
-import AppLayout from '@/components/AppLayout';
-import HeroGreeting from './components/HeroGreeting';
-import QuickFeatureCards from './components/QuickFeatureCards';
-import MotivationHero from '../daily-motivation/components/MotivationHero';
-import FloatingDoodles from './components/FloatingDoodles';
+'use client';
 
-// Lazy load heavier below-the-fold components
-const WeeklyMoodSummary = lazy(() => import('./components/WeeklyMoodSummary'));
-const WellnessTips = lazy(() => import('./components/WellnessTips'));
-const CommunityPreview = lazy(() => import('./components/CommunityPreview'));
+import dynamic from 'next/dynamic';
+import { Suspense, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import AppLayout from '@/components/AppLayout';
+
+// Dynamic imports for all client-heavy components to prevent ChunkLoadError
+const FloatingDoodles = dynamic(() => import('./components/FloatingDoodles'), { ssr: false });
+const HeroGreeting = dynamic(() => import('./components/HeroGreeting'), { ssr: false });
+const QuickFeatureCards = dynamic(() => import('./components/QuickFeatureCards'), { ssr: false });
+
+// Cross-route import MUST be dynamic — static cross-route imports cause ChunkLoadError in App Router
+const MotivationHero = dynamic(() => import('../daily-motivation/components/MotivationHero'), { ssr: false });
+
+// Below-the-fold dynamic imports
+const WeeklyMoodSummary = dynamic(() => import('./components/WeeklyMoodSummary'), { ssr: false });
+const WellnessTips = dynamic(() => import('./components/WellnessTips'), { ssr: false });
+const CommunityPreview = dynamic(() => import('./components/CommunityPreview'), { ssr: false });
+
+// OnboardingModal — client-only, no SSR
+const OnboardingModal = dynamic(() => import('@/components/OnboardingModal'), { ssr: false });
 
 function SectionSkeleton() {
   return (
@@ -17,16 +28,32 @@ function SectionSkeleton() {
 }
 
 export default function HomeDashboardPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const introSeen = localStorage.getItem('auremind_intro_seen');
+    if (!introSeen) {
+      router?.replace('/intro');
+    }
+  }, [router]);
+
   return (
     <AppLayout>
+      <OnboardingModal />
       <div className="relative space-y-6 py-2">
         <FloatingDoodles />
-        <HeroGreeting />
-        <MotivationHero />
+        <Suspense fallback={<SectionSkeleton />}>
+          <HeroGreeting />
+        </Suspense>
+        <Suspense fallback={<SectionSkeleton />}>
+          <MotivationHero />
+        </Suspense>
         <Suspense fallback={<SectionSkeleton />}>
           <WeeklyMoodSummary />
         </Suspense>
-        <QuickFeatureCards />
+        <Suspense fallback={<SectionSkeleton />}>
+          <QuickFeatureCards />
+        </Suspense>
         <Suspense fallback={<SectionSkeleton />}>
           <WellnessTips />
         </Suspense>

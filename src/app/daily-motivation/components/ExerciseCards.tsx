@@ -431,7 +431,12 @@ export default function ExerciseCards() {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+    >
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-nunito font-700 text-lg text-purple-900">Exercises & Stretches 🧘</h2>
         <span className="text-xs font-dm text-purple-400">Tap to start</span>
@@ -442,22 +447,27 @@ export default function ExerciseCards() {
           <motion.button
             key={ex.name}
             initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ delay: i * 0.06 }}
             whileHover={{ y: -6, scale: 1.05, boxShadow: '0 14px 36px rgba(99,102,241,0.20)' }}
             whileTap={{ scale: 0.94, y: 0 }}
             onClick={() => setSelectedExercise(ex)}
-            className={`relative bg-gradient-to-br ${ex.gradient} rounded-3xl p-4 flex flex-col items-center gap-1 min-w-[110px] border border-white/60 shadow-sm transition-shadow duration-300 overflow-hidden`}
+            className={`relative bg-gradient-to-br ${ex.gradient} rounded-3xl p-4 flex flex-col items-center min-w-[110px] w-[110px] h-[190px] border border-white/60 shadow-sm transition-shadow duration-300 overflow-hidden`}
           >
-            {/* In-card animation */}
-            {ex.type === 'breathing' ? (
-              <CardBreathingAnim />
-            ) : (
-              <CardStretchAnim emoji={ex.emoji} />
-            )}
-            <p className={`font-nunito font-700 text-xs ${ex.textColor} text-center leading-tight mt-1`}>{ex.name}</p>
-            <p className={`text-[10px] font-dm ${ex.textColor} opacity-60 text-center`}>{ex.desc}</p>
-            <div className={`mt-1 px-3 py-1 rounded-xl bg-white/50 border border-white/60`}>
+            {/* Top content area - fixed height */}
+            <div className="flex flex-col items-center flex-1 w-full">
+              {/* In-card animation */}
+              {ex.type === 'breathing' ? (
+                <CardBreathingAnim />
+              ) : (
+                <CardStretchAnim emoji={ex.emoji} />
+              )}
+              <p className={`font-nunito font-700 text-xs ${ex.textColor} text-center leading-tight mt-1`}>{ex.name}</p>
+              <p className={`text-[10px] font-dm ${ex.textColor} opacity-60 text-center mt-0.5`}>{ex.desc}</p>
+            </div>
+            {/* Button always at bottom */}
+            <div className={`mt-2 px-3 py-1 rounded-xl bg-white/50 border border-white/60 shrink-0`}>
               <span className={`text-[10px] font-dm font-bold ${ex.textColor}`}>
                 {ex.type === 'breathing' ? '🌬️ Breath' : '🤸 Stretch'}
               </span>
@@ -475,6 +485,6 @@ export default function ExerciseCards() {
           />
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
