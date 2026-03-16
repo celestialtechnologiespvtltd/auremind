@@ -41,7 +41,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Tests',
+    label: 'Mindscape',
     path: '/psychology-tests',
     emoji: '🧠',
     doodle: (
