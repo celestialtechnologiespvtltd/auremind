@@ -312,21 +312,7 @@ const QuickFeatureCards = memo(function QuickFeatureCards() {
         </AnimatePresence>
       </div>
 
-      <div className="flex justify-center gap-1.5 mt-3">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => {
-              setDirection(i > currentSlide ? 1 : -1);
-              setCurrentSlide(i);
-            }}
-            className={`rounded-full transition-all duration-300 ${
-              i === currentSlide ? 'w-4 h-1.5 bg-purple-500' : 'w-1.5 h-1.5 bg-purple-200'
-            }`}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
+      {/* dot indicators removed */}
     </div>
   );
 });
