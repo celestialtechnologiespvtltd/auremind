@@ -1,153 +1,447 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-
-const sections = [
-  {
-    side: 'left',
-    title: 'Problem Statement',
-    emoji: '💭',
-    gradient: 'from-purple-400 to-purple-500',
-    bg: 'bg-white/70 backdrop-blur-sm border-white/80',
-    text: 'Many people today struggle with stress, emotional burnout, and mental health challenges. In a fast-moving world, people rarely have a calm space to pause, reflect, and understand their emotions.',
-  },
-  {
-    side: 'right',
-    title: 'Solution',
-    emoji: '✨',
-    gradient: 'from-pink-400 to-pink-500',
-    bg: 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-100/60',
-    text: 'AureMind offers a peaceful digital environment where users can track their mood, reflect through journaling, explore self-awareness tools, and stay motivated while connecting with a supportive community.',
-  },
-  {
-    side: 'left',
-    title: 'Why We Exist',
-    emoji: '🌱',
-    gradient: 'from-blue-400 to-purple-400',
-    bg: 'bg-gradient-to-br from-blue-50 to-purple-50 border-blue-100/60',
-    text: 'AureMind exists to help individuals understand their inner world and build emotional balance through reflection, mindfulness, and positive daily habits.',
-  },
-  {
-    side: 'right',
-    title: 'About AureMind',
-    emoji: '🧠',
-    gradient: 'from-purple-400 to-pink-400',
-    bg: 'bg-white/70 backdrop-blur-sm border-white/80',
-    text: 'AureMind is a personal mental wellness platform designed to support emotional wellbeing through mood tracking, journaling, self-reflection tools, daily motivation, and community support.',
-  },
-];
+import { useRef, useState } from 'react';
 
 export default function IntroPage() {
   const router = useRouter();
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setMousePos({
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    });
+  };
 
   const handleContinue = () => {
     localStorage.setItem('auremind_intro_seen', 'true');
     router.push('/home-dashboard');
   };
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.15, duration: 0.6, ease: 'easeOut' },
-    }),
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 overflow-x-hidden">
-      {/* Decorative background blobs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-purple-200/30 blur-3xl" />
-        <div className="absolute top-1/3 -right-24 w-80 h-80 rounded-full bg-pink-200/30 blur-3xl" />
-        <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full bg-blue-200/20 blur-3xl" />
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="min-h-screen w-full relative flex flex-col"
+      style={{
+        background: 'linear-gradient(135deg, #f3e8ff 0%, #e8f4ff 35%, #fce4f0 65%, #ede9fe 100%)',
+      }}
+    >
+      {/* Animated background orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Large orb top-left */}
+        <div
+          className="absolute rounded-full opacity-40"
+          style={{
+            width: '520px',
+            height: '520px',
+            top: '-120px',
+            left: '-100px',
+            background: 'radial-gradient(circle, #CDB4DB 0%, #A2D2FF 50%, transparent 70%)',
+            transform: `translate(${mousePos.x * 18}px, ${mousePos.y * 12}px)`,
+            transition: 'transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            animation: 'floatOrb1 8s ease-in-out infinite',
+          }}
+        />
+        {/* Medium orb bottom-right */}
+        <div
+          className="absolute rounded-full opacity-35"
+          style={{
+            width: '400px',
+            height: '400px',
+            bottom: '-80px',
+            right: '-60px',
+            background: 'radial-gradient(circle, #FFAFCC 0%, #FFC8DD 40%, transparent 70%)',
+            transform: `translate(${-mousePos.x * 14}px, ${-mousePos.y * 10}px)`,
+            transition: 'transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            animation: 'floatOrb2 10s ease-in-out infinite',
+          }}
+        />
+        {/* Small orb center */}
+        <div
+          className="absolute rounded-full opacity-25"
+          style={{
+            width: '280px',
+            height: '280px',
+            top: '40%',
+            left: '55%',
+            background: 'radial-gradient(circle, #A2D2FF 0%, #CDB4DB 60%, transparent 80%)',
+            transform: `translate(${mousePos.x * 22}px, ${-mousePos.y * 16}px)`,
+            transition: 'transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            animation: 'floatOrb3 12s ease-in-out infinite',
+          }}
+        />
+        {/* Noise texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          }}
+        />
       </div>
 
-      <div className="relative z-10 max-w-3xl mx-auto px-5 py-12 pb-24">
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: `${4 + (i % 4) * 3}px`,
+              height: `${4 + (i % 4) * 3}px`,
+              left: `${8 + i * 7.5}%`,
+              top: `${15 + ((i * 37) % 65)}%`,
+              background: i % 3 === 0
+                ? 'rgba(205,180,219,0.6)'
+                : i % 3 === 1
+                ? 'rgba(162,210,255,0.6)'
+                : 'rgba(255,175,204,0.6)',
+              animation: `floatParticle ${5 + (i % 4)}s ease-in-out infinite`,
+              animationDelay: `${i * 0.4}s`,
+            }}
+          />
+        ))}
+      </div>
 
-        {/* ── Header ── */}
-        <motion.div
-          custom={0}
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          className="text-center mb-14"
-        >
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col min-h-screen px-5 md:px-10 py-8 max-w-5xl mx-auto w-full">
+
+        {/* Header — brand identity */}
+        <div className="text-center mb-10 md:mb-14">
+          {/* Logo mark */}
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shadow-lg">
-              <span className="text-3xl">🌸</span>
+            <div
+              className="relative w-16 h-16 rounded-2xl flex items-center justify-center"
+              style={{
+                background: 'linear-gradient(135deg, #CDB4DB 0%, #A2D2FF 50%, #FFAFCC 100%)',
+                boxShadow: '0 8px 32px rgba(205,180,219,0.5), 0 2px 8px rgba(162,210,255,0.3)',
+              }}
+            >
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M16 4C16 4 8 10 8 18C8 22.4 11.6 26 16 26C20.4 26 24 22.4 24 18C24 10 16 4 16 4Z" fill="white" fillOpacity="0.9"/>
+                <path d="M16 10C16 10 11 14 11 19C11 21.8 13.2 24 16 24C18.8 24 21 21.8 21 19C21 14 16 10 16 10Z" fill="white" fillOpacity="0.5"/>
+                <circle cx="16" cy="19" r="3" fill="white"/>
+              </svg>
+              {/* Glow ring */}
+              <div
+                className="absolute inset-0 rounded-2xl"
+                style={{
+                  background: 'linear-gradient(135deg, #CDB4DB, #A2D2FF, #FFAFCC)',
+                  opacity: 0.4,
+                  filter: 'blur(8px)',
+                  transform: 'scale(1.3)',
+                  zIndex: -1,
+                }}
+              />
             </div>
           </div>
-          <h1 className="font-nunito font-extrabold text-4xl md:text-5xl text-purple-900 tracking-tight mb-3">
+
+          <h1
+            className="font-nunito font-extrabold text-5xl md:text-6xl tracking-tight mb-3"
+            style={{
+              background: 'linear-gradient(135deg, #6b21a8 0%, #7c3aed 40%, #be185d 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              letterSpacing: '-0.02em',
+            }}
+          >
             AureMind
           </h1>
-          <p className="font-dm font-semibold text-lg text-purple-600 whitespace-nowrap">
+          <p
+            className="font-dm font-medium text-base md:text-lg tracking-wide"
+            style={{ color: '#7c3aed', opacity: 0.75 }}
+          >
             Elevate Your Mind, Embrace Your Calm
           </p>
-        </motion.div>
 
-        {/* ── Alternating Sections ── */}
-        <div className="flex flex-col gap-6 mb-12">
-          {sections.map((section, i) => (
-            <motion.div
-              key={section.title}
-              custom={i + 1}
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              className={`flex ${section.side === 'right' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`w-full md:w-[78%] rounded-3xl p-7 border shadow-sm ${section.bg}`}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className={`w-9 h-9 rounded-xl bg-gradient-to-br ${section.gradient} flex items-center justify-center shadow-sm flex-shrink-0`}
-                  >
-                    <span className="text-base">{section.emoji}</span>
-                  </div>
-                  <h2 className="font-nunito font-bold text-xl text-purple-900">
-                    {section.title}
-                  </h2>
-                </div>
-                <p className="font-dm text-sm text-purple-700 leading-relaxed">
-                  {section.text}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+          {/* Decorative line */}
+          <div className="flex items-center justify-center gap-3 mt-4">
+            <div className="h-px w-16 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #CDB4DB)' }} />
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#CDB4DB' }} />
+            <div className="h-px w-16 rounded-full" style={{ background: 'linear-gradient(90deg, #A2D2FF, transparent)' }} />
+          </div>
         </div>
 
-        {/* ── Continue Button ── */}
-        <motion.div
-          custom={5}
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          className="flex justify-center"
-        >
-          <motion.button
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={handleContinue}
-            className="px-10 py-4 rounded-2xl font-nunito font-bold text-base text-white bg-gradient-to-r from-purple-500 to-pink-400 shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 transition-shadow duration-300"
-          >
-            Continue →
-          </motion.button>
-        </motion.div>
+        {/* Bento grid — asymmetric layout */}
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5 mb-10">
 
-        {/* Footer note */}
-        <motion.p
-          custom={6}
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          className="text-center text-xs font-dm text-purple-400 mt-6"
-        >
-          Your data stays on your device. We respect your privacy.
-        </motion.p>
+          {/* Problem Statement — large card, spans 7 cols */}
+          <div
+            className="md:col-span-7 rounded-3xl p-7 md:p-8 relative overflow-hidden group"
+            style={{
+              background: 'rgba(255,255,255,0.62)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(205,180,219,0.4)',
+              boxShadow: '0 8px 32px rgba(205,180,219,0.18), 0 2px 8px rgba(0,0,0,0.04)',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 60px rgba(205,180,219,0.35), 0 4px 16px rgba(0,0,0,0.06)';
+              (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 32px rgba(205,180,219,0.18), 0 2px 8px rgba(0,0,0,0.04)';
+              (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+            }}
+          >
+            {/* Accent blob inside card */}
+            <div
+              className="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-20 pointer-events-none"
+              style={{ background: 'radial-gradient(circle, #CDB4DB, transparent)' }}
+            />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'linear-gradient(135deg, #e9d5ff, #CDB4DB)' }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="#7c3aed" fillOpacity="0.8"/>
+                  </svg>
+                </div>
+                <div>
+                  <span
+                    className="font-nunito font-bold text-xs uppercase tracking-widest"
+                    style={{ color: '#7c3aed', opacity: 0.6 }}
+                  >
+                    The Challenge
+                  </span>
+                  <h2 className="font-nunito font-extrabold text-xl md:text-2xl text-purple-900 leading-tight">
+                    Problem Statement
+                  </h2>
+                </div>
+              </div>
+              <div className="h-px mb-5" style={{ background: 'linear-gradient(90deg, #CDB4DB, #A2D2FF, transparent)' }} />
+              <p className="font-dm text-sm md:text-base text-purple-800 leading-relaxed" style={{ opacity: 0.85 }}>
+                Many people today struggle with stress, anxiety, emotional burnout, and mental health challenges. In a fast-paced world, individuals rarely have a calm space to pause, reflect, and understand their emotions.
+              </p>
+              {/* Stat pills */}
+              <div className="flex flex-wrap gap-2 mt-5">
+                {['Stress', 'Anxiety', 'Burnout', 'Isolation'].map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-3 py-1 rounded-full text-xs font-dm font-medium"
+                    style={{
+                      background: 'rgba(205,180,219,0.25)',
+                      color: '#6b21a8',
+                      border: '1px solid rgba(205,180,219,0.4)',
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Why We Exist — tall card, spans 5 cols */}
+          <div
+            className="md:col-span-5 rounded-3xl p-7 relative overflow-hidden"
+            style={{
+              background: 'rgba(255,255,255,0.55)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(162,210,255,0.4)',
+              boxShadow: '0 8px 32px rgba(162,210,255,0.18), 0 2px 8px rgba(0,0,0,0.04)',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 60px rgba(162,210,255,0.35), 0 4px 16px rgba(0,0,0,0.06)';
+              (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 32px rgba(162,210,255,0.18), 0 2px 8px rgba(0,0,0,0.04)';
+              (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <div
+              className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full opacity-20 pointer-events-none"
+              style={{ background: 'radial-gradient(circle, #A2D2FF, transparent)' }}
+            />
+            <div className="relative z-10 h-full flex flex-col">
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'linear-gradient(135deg, #dbeafe, #A2D2FF)' }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#3b82f6" fillOpacity="0.7"/>
+                  </svg>
+                </div>
+                <div>
+                  <span
+                    className="font-nunito font-bold text-xs uppercase tracking-widest"
+                    style={{ color: '#3b82f6', opacity: 0.6 }}
+                  >
+                    Our Purpose
+                  </span>
+                  <h2 className="font-nunito font-extrabold text-xl md:text-2xl text-purple-900 leading-tight">
+                    Why We Exist
+                  </h2>
+                </div>
+              </div>
+              <div className="h-px mb-5" style={{ background: 'linear-gradient(90deg, #A2D2FF, #CDB4DB, transparent)' }} />
+              <p className="font-dm text-sm md:text-base text-purple-800 leading-relaxed flex-1" style={{ opacity: 0.85 }}>
+                AureMind exists to empower individuals to better understand their inner world and build emotional balance through reflection, awareness, and positive daily habits.
+              </p>
+              {/* Visual accent */}
+              <div
+                className="mt-5 rounded-2xl p-4"
+                style={{ background: 'linear-gradient(135deg, rgba(162,210,255,0.2), rgba(205,180,219,0.2))' }}
+              >
+                <p className="font-nunito font-bold text-sm text-purple-700 text-center italic">
+                  &ldquo;Your mind deserves a sanctuary.&rdquo;
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Solution — full width bottom card */}
+          <div
+            className="md:col-span-12 rounded-3xl p-7 md:p-8 relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255,175,204,0.35) 0%, rgba(255,200,221,0.25) 40%, rgba(205,180,219,0.3) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,175,204,0.4)',
+              boxShadow: '0 8px 32px rgba(255,175,204,0.2), 0 2px 8px rgba(0,0,0,0.04)',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 60px rgba(255,175,204,0.35), 0 4px 16px rgba(0,0,0,0.06)';
+              (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 32px rgba(255,175,204,0.2), 0 2px 8px rgba(0,0,0,0.04)';
+              (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+            }}
+          >
+            {/* Large decorative blob */}
+            <div
+              className="absolute -top-16 right-20 w-56 h-56 rounded-full opacity-15 pointer-events-none"
+              style={{ background: 'radial-gradient(circle, #FFAFCC, transparent)' }}
+            />
+            <div className="relative z-10 md:flex md:items-center md:gap-10">
+              <div className="md:flex-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'linear-gradient(135deg, #fce7f3, #FFAFCC)' }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="#be185d" fillOpacity="0.8"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <span
+                      className="font-nunito font-bold text-xs uppercase tracking-widest"
+                      style={{ color: '#be185d', opacity: 0.6 }}
+                    >
+                      The Answer
+                    </span>
+                    <h2 className="font-nunito font-extrabold text-xl md:text-2xl text-purple-900 leading-tight">
+                      Solution
+                    </h2>
+                  </div>
+                </div>
+                <div className="h-px mb-5" style={{ background: 'linear-gradient(90deg, #FFAFCC, #FFC8DD, transparent)' }} />
+                <p className="font-dm text-sm md:text-base text-purple-800 leading-relaxed" style={{ opacity: 0.85 }}>
+                  AureMind provides a peaceful digital environment where users can track their mood, reflect through journaling, explore self-reflection tools, stay motivated, and connect with a supportive community.
+                </p>
+              </div>
+              {/* Feature pills — horizontal on desktop */}
+              <div className="mt-5 md:mt-0 md:flex-shrink-0 grid grid-cols-2 md:grid-cols-1 gap-2 md:w-52">
+                {[
+                  { label: 'Mood Tracking', color: 'rgba(205,180,219,0.35)', border: 'rgba(205,180,219,0.5)', text: '#6b21a8' },
+                  { label: 'Journaling', color: 'rgba(162,210,255,0.35)', border: 'rgba(162,210,255,0.5)', text: '#1d4ed8' },
+                  { label: 'Community', color: 'rgba(255,175,204,0.35)', border: 'rgba(255,175,204,0.5)', text: '#be185d' },
+                  { label: 'Self-Reflection', color: 'rgba(255,200,221,0.35)', border: 'rgba(255,200,221,0.5)', text: '#9d174d' },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="px-4 py-2.5 rounded-2xl text-center"
+                    style={{
+                      background: item.color,
+                      border: `1px solid ${item.border}`,
+                    }}
+                  >
+                    <span className="font-dm font-semibold text-xs" style={{ color: item.text }}>
+                      {item.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Continue button */}
+        <div className="flex flex-col items-center gap-3 pb-8">
+          <button
+            onClick={handleContinue}
+            className="relative group px-12 py-4 rounded-2xl font-nunito font-bold text-base text-white overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%)',
+              boxShadow: '0 8px 32px rgba(124,58,237,0.4), 0 2px 8px rgba(0,0,0,0.1)',
+              transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-3px) scale(1.03)';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 16px 48px rgba(124,58,237,0.5), 0 4px 16px rgba(0,0,0,0.12)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0) scale(1)';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 32px rgba(124,58,237,0.4), 0 2px 8px rgba(0,0,0,0.1)';
+            }}
+            onMouseDown={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0) scale(0.97)';
+            }}
+            onMouseUp={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-3px) scale(1.03)';
+            }}
+          >
+            {/* Shimmer effect */}
+            <span
+              className="absolute inset-0 opacity-0 group-hover:opacity-100"
+              style={{
+                background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%)',
+                transition: 'opacity 0.3s ease',
+              }}
+            />
+            <span className="relative flex items-center gap-2">
+              Begin Your Journey
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="group-hover:translate-x-1 transition-transform duration-200">
+                <path d="M8 5l7 7-7 7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
+          </button>
+          <p className="font-dm text-xs text-purple-500 opacity-70">
+            Your data stays on your device. We respect your privacy.
+          </p>
+        </div>
       </div>
+
+      {/* Keyframe animations */}
+      <style jsx>{`
+        @keyframes floatOrb1 {
+          0%, 100% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(20px, -15px) scale(1.05); }
+          66% { transform: translate(-10px, 10px) scale(0.97); }
+        }
+        @keyframes floatOrb2 {
+          0%, 100% { transform: translate(0px, 0px) scale(1); }
+          40% { transform: translate(-18px, 12px) scale(1.04); }
+          70% { transform: translate(12px, -8px) scale(0.98); }
+        }
+        @keyframes floatOrb3 {
+          0%, 100% { transform: translate(0px, 0px) scale(1); }
+          50% { transform: translate(15px, -20px) scale(1.06); }
+        }
+        @keyframes floatParticle {
+          0%, 100% { transform: translateY(0px) scale(1); opacity: 0.6; }
+          50% { transform: translateY(-18px) scale(1.2); opacity: 0.9; }
+        }
+      `}</style>
     </div>
   );
 }
