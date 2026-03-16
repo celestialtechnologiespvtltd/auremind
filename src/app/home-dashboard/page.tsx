@@ -1,3 +1,6 @@
+'use client';
+
+import dynamic from 'next/dynamic';
 import { Suspense, lazy } from 'react';
 import AppLayout from '@/components/AppLayout';
 import HeroGreeting from './components/HeroGreeting';
@@ -10,6 +13,9 @@ const WeeklyMoodSummary = lazy(() => import('./components/WeeklyMoodSummary'));
 const WellnessTips = lazy(() => import('./components/WellnessTips'));
 const CommunityPreview = lazy(() => import('./components/CommunityPreview'));
 
+// Dynamic import for OnboardingModal — client-only, no SSR
+const OnboardingModal = dynamic(() => import('@/components/OnboardingModal'), { ssr: false });
+
 function SectionSkeleton() {
   return (
     <div className="rounded-3xl bg-white/50 border border-purple-100/60 animate-pulse h-32" />
@@ -19,6 +25,7 @@ function SectionSkeleton() {
 export default function HomeDashboardPage() {
   return (
     <AppLayout>
+      <OnboardingModal />
       <div className="relative space-y-6 py-2">
         <FloatingDoodles />
         <HeroGreeting />
