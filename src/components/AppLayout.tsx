@@ -430,7 +430,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                         </div>
                         <div>
                           <p className="font-nunito font-800 text-base text-purple-900">{communityName || 'Anonymous'}</p>
-                          <p className="text-xs font-dm text-purple-500">MindBloom Member</p>
+                          <p className="text-xs font-dm text-purple-500">AureMind Member</p>
                         </div>
                       </div>
                       {!isEditing ?
