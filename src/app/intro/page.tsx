@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
@@ -41,14 +40,6 @@ const sections = [
 
 export default function IntroPage() {
   const router = useRouter();
-
-  useEffect(() => {
-    const seenIntro = localStorage.getItem('auremind_intro_seen');
-    const user = localStorage.getItem('mindbloom_user');
-    if (seenIntro && user) {
-      router.replace('/home-dashboard');
-    }
-  }, [router]);
 
   const handleContinue = () => {
     localStorage.setItem('auremind_intro_seen', 'true');
