@@ -11,11 +11,6 @@ const sections = [
     gradient: 'from-purple-500 to-purple-600',
     bg: 'bg-white/75 border-white/80',
     text: 'Many people today struggle with stress, anxiety, emotional burnout, and mental health challenges. In a fast-paced world, individuals rarely have a calm space to pause, reflect, and understand their emotions.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-      </svg>
-    ),
   },
   {
     title: 'Solution',
@@ -23,11 +18,6 @@ const sections = [
     gradient: 'from-pink-500 to-rose-500',
     bg: 'bg-white/75 border-white/80',
     text: 'AureMind provides a peaceful digital environment where users can track their mood, reflect through journaling, explore self-reflection tools, stay motivated, and connect with a supportive community.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
-      </svg>
-    ),
   },
   {
     title: 'Why We Exist',
@@ -35,11 +25,6 @@ const sections = [
     gradient: 'from-blue-500 to-purple-500',
     bg: 'bg-white/75 border-white/80',
     text: 'AureMind exists to empower individuals to better understand their inner world and build emotional balance through reflection, awareness, and positive daily habits.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-      </svg>
-    ),
   },
 ];
 
@@ -116,13 +101,6 @@ export default function IntroPage() {
                 style={{ backdropFilter: 'blur(14px)' }}
               >
                 <div className="flex items-center gap-3 mb-2">
-                  {/* Icon */}
-                  <div
-                    className={`w-11 h-11 flex-shrink-0 rounded-2xl bg-gradient-to-br ${section.gradient} flex items-center justify-center shadow-md`}
-                  >
-                    {section.icon}
-                  </div>
-
                   {/* Title + Divider */}
                   <div className="flex flex-col">
                     <h2 className="font-nunito font-bold text-base md:text-lg text-purple-900">
