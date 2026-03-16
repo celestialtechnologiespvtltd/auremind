@@ -6,7 +6,7 @@ import CommunityFeed from './components/CommunityFeed';
 import CommunityHeader from './components/CommunityHeader';
 import CommunityGuidelinesModal from './components/CommunityGuidelinesModal';
 
-const GUIDELINES_KEY = 'mindbloom_community_guidelines_accepted';
+const GUIDELINES_KEY = 'mindbloom_community_guidelines_v2';
 
 export default function CommunitySectionPage() {
   const [guidelinesAccepted, setGuidelinesAccepted] = useState<boolean | null>(null);

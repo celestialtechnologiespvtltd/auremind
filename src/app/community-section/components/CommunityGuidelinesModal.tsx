@@ -12,7 +12,7 @@ import {
 import Icon from '@/components/ui/AppIcon';
 
 
-const GUIDELINES_KEY = 'mindbloom_community_guidelines_accepted';
+const GUIDELINES_KEY = 'mindbloom_community_guidelines_v2';
 
 const guidelines = [
   {
