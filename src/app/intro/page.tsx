@@ -97,7 +97,7 @@ export default function IntroPage() {
               className={`flex justify-${section.align} cursor-default`}
             >
               <div
-                className={`w-[72%] rounded-3xl p-4 md:p-5 border shadow-md ${section.bg} transition-shadow duration-300 flex flex-col`}
+                className={`w-[38%] min-h-[160px] rounded-3xl p-4 md:p-5 border shadow-md ${section.bg} transition-shadow duration-300 flex flex-col`}
                 style={{ backdropFilter: 'blur(14px)' }}
               >
                 <div className="flex items-center gap-3 mb-2">
