@@ -1,17 +1,17 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Suspense, lazy } from 'react';
+import { Suspense } from 'react';
 import AppLayout from '@/components/AppLayout';
 import HeroGreeting from './components/HeroGreeting';
 import QuickFeatureCards from './components/QuickFeatureCards';
 import MotivationHero from '../daily-motivation/components/MotivationHero';
 import FloatingDoodles from './components/FloatingDoodles';
 
-// Lazy load heavier below-the-fold components
-const WeeklyMoodSummary = lazy(() => import('./components/WeeklyMoodSummary'));
-const WellnessTips = lazy(() => import('./components/WellnessTips'));
-const CommunityPreview = lazy(() => import('./components/CommunityPreview'));
+// Dynamic imports for below-the-fold components (Next.js pattern)
+const WeeklyMoodSummary = dynamic(() => import('./components/WeeklyMoodSummary'), { ssr: false });
+const WellnessTips = dynamic(() => import('./components/WellnessTips'), { ssr: false });
+const CommunityPreview = dynamic(() => import('./components/CommunityPreview'), { ssr: false });
 
 // Dynamic import for OnboardingModal — client-only, no SSR
 const OnboardingModal = dynamic(() => import('@/components/OnboardingModal'), { ssr: false });
