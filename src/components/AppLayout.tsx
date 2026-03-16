@@ -233,9 +233,10 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
               {/* LEFT: Logo + Site Name */}
               <div className="flex items-center gap-2.5 flex-shrink-0">
                 <AppLogo size={32} />
-                <span className="font-nunito font-800 text-xl bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent tracking-tight">AureMind
-
-              </span>
+                <div className="flex flex-col">
+                  <span className="font-nunito font-800 text-xl bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent tracking-tight leading-tight">AureMind</span>
+                  <span className="text-xs font-light text-purple-400/80 tracking-wide leading-tight">Elevate Your Mind, Embrace Your Balance</span>
+                </div>
               </div>
 
               {/* CENTER: Desktop Nav Links */}
