@@ -2,29 +2,25 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { RefreshCw, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 const quotes = [
   { text: "You don't have to be positive all the time. It's perfectly okay to feel sad, angry, annoyed, or overwhelmed.", author: 'Lori Deschene' },
   { text: 'Self-care is not selfish. You cannot serve from an empty vessel.', author: 'Eleanor Brownn' },
   { text: "Mental health is not a destination, but a process. It's about how you drive, not where you're going.", author: 'Noam Shpancer' },
   { text: 'Be gentle with yourself. You are a child of the universe, no less than the trees and the stars.', author: 'Max Ehrmann' },
-  { text: "You are allowed to be both a masterpiece and a work in progress simultaneously.", author: 'Sophia Bush' },
+  { text: 'You are allowed to be both a masterpiece and a work in progress simultaneously.', author: 'Sophia Bush' },
 ];
 
-export default function DailyQuoteCard() {
-  const [idx, setIdx] = useState(0);
-  const [liked, setLiked] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+function getDailyQuote() {
+  const today = new Date();
+  const dayIndex = Math.floor(today?.getTime() / (1000 * 60 * 60 * 24));
+  return quotes?.[dayIndex % quotes?.length];
+}
 
-  const refresh = () => {
-    setIsRefreshing(true);
-    setLiked(false);
-    setTimeout(() => {
-      setIdx((prev) => (prev + 1) % quotes?.length);
-      setIsRefreshing(false);
-    }, 400);
-  };
+export default function DailyQuoteCard() {
+  const [liked, setLiked] = useState(false);
+  const quote = getDailyQuote();
 
   return (
     <motion.div
@@ -40,42 +36,20 @@ export default function DailyQuoteCard() {
             <span className="text-2xl">💫</span>
             <p className="font-nunito font-700 text-sm text-purple-800 uppercase tracking-wide">Daily Motivation</p>
           </div>
-          <div className="flex gap-2">
-            <motion.button
-              whileTap={{ scale: 0.85 }}
-              onClick={() => setLiked(!liked)}
-              className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${liked ? 'bg-pink-200 text-pink-600' : 'bg-white/60 text-purple-400'}`}
-            >
-              <Heart size={16} fill={liked ? 'currentColor' : 'none'} />
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.85 }}
-              onClick={refresh}
-              className="w-8 h-8 rounded-xl bg-white/60 flex items-center justify-center text-purple-500 hover:bg-white/90 transition-all"
-            >
-              <motion.div animate={{ rotate: isRefreshing ? 360 : 0 }} transition={{ duration: 0.4 }}>
-                <RefreshCw size={16} />
-              </motion.div>
-            </motion.button>
-          </div>
+          <motion.button
+            whileTap={{ scale: 0.85 }}
+            onClick={() => setLiked(!liked)}
+            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${liked ? 'bg-pink-200 text-pink-600' : 'bg-white/60 text-purple-400'}`}
+          >
+            <Heart size={16} fill={liked ? 'currentColor' : 'none'} />
+          </motion.button>
         </div>
 
-        <motion.div
-          key={idx}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
-        >
+        <div className="text-center">
           <p className="font-nunito font-600 text-purple-900 text-lg leading-relaxed mb-3">
-            &ldquo;{quotes?.[idx]?.text}&rdquo;
+            &ldquo;{quote?.text}&rdquo;
           </p>
-          <p className="text-sm font-dm text-purple-500">— {quotes?.[idx]?.author}</p>
-        </motion.div>
-
-        <div className="flex gap-1 mt-4">
-          {quotes?.map((_, i) => (
-            <button key={i} onClick={() => setIdx(i)} className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'bg-purple-500 w-6' : 'bg-purple-200 w-1.5'}`} />
-          ))}
+          <p className="text-sm font-dm text-purple-500">— {quote?.author}</p>
         </div>
       </div>
     </motion.div>
