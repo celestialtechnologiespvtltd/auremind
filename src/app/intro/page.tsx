@@ -235,7 +235,7 @@ export default function IntroPage() {
                     The Challenge
                   </span>
                   <h2 className="font-nunito font-extrabold text-xl md:text-2xl text-purple-900 leading-tight">
-                    Problem Statement
+                    Problem
                   </h2>
                 </div>
               </div>
