@@ -59,7 +59,7 @@ function writeUserData(updates: Partial<UserData>) {
 
 export default function AppLayout({ children, hideHeader = false }: AppLayoutProps) {
   const [showSettings, setShowSettings] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [notifGranted, setNotifGranted] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
@@ -85,7 +85,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
 
   const pathname = usePathname();
   const router = useRouter();
-  const menuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const isHomePage = pathname === '/home-dashboard';
 
   // Single batched localStorage read on mount
@@ -101,8 +101,6 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
     setDailyReminderTime(data.dailyReminderTime || '');
     setExerciseReminderTime(data.exerciseReminderTime || '');
     setNotifGranted(getNotificationPermission() === 'granted');
-
-    // Register SW on mount
     registerServiceWorker();
   }, []);
 
@@ -133,15 +131,21 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
     }
   }, [notifGranted, dailyReminder, dailyReminderTime, exerciseReminder, exerciseReminderTime]);
 
+  // Close mobile menu on outside click
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setShowMenu(false);
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target as Node)) {
+        setShowMobileMenu(false);
       }
     };
-    if (showMenu) document.addEventListener('mousedown', handleClick);
+    if (showMobileMenu) document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
-  }, [showMenu]);
+  }, [showMobileMenu]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setShowMobileMenu(false);
+  }, [pathname]);
 
   const toggleUsernameVisibility = useCallback(() => {
     const newVal = !usernamePublic;
@@ -166,10 +170,8 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
 
   const handleDailyReminderToggle = useCallback(() => {
     if (!dailyReminder) {
-      // Turning ON — show time picker
       setShowDailyTimePicker(true);
     } else {
-      // Turning OFF
       setDailyReminder(false);
       setDailyReminderTime('');
       setShowDailyTimePicker(false);
@@ -213,88 +215,154 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
   }, []);
 
   const handleNavClick = useCallback((path: string) => {
-    setShowMenu(false);
+    setShowMobileMenu(false);
     router.push(path);
   }, [router]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50" style={{ WebkitOverflowScrolling: 'touch' }}>
       {!hideHeader && (
-        <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-xl border-b border-white/60" ref={menuRef}>
-          <div className="max-w-screen-2xl mx-auto px-4 py-2.5 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <AppLogo size={28} />
-              <span className="font-nunito font-800 text-lg text-purple-800 tracking-tight hidden sm:block">MindBloom</span>
-            </div>
+        <header
+          ref={mobileMenuRef}
+          className="fixed top-0 left-0 right-0 z-40 bg-white/70 backdrop-blur-2xl border-b border-white/50 shadow-sm"
+          style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(243,232,255,0.65) 50%, rgba(252,231,243,0.65) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+        >
+          <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
 
-            <div className="flex-1 flex justify-center">
-              <span className="font-nunito font-700 text-sm text-purple-700">
-                {navItems.find(n => n.path === pathname)?.label ?? 'MindBloom'}
-              </span>
-            </div>
+              {/* LEFT: Logo + Site Name */}
+              <div className="flex items-center gap-2.5 flex-shrink-0">
+                <AppLogo size={32} />
+                <span className="font-nunito font-800 text-xl bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent tracking-tight">
+                  MindBloom
+                </span>
+              </div>
 
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setShowMenu(v => !v)}
-                className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-2xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-500 transition-colors"
-                aria-label="Open navigation menu"
-              >
-                <Menu size={18} />
-              </motion.button>
+              {/* CENTER: Desktop Nav Links */}
+              <nav className="hidden md:flex items-center gap-1">
+                {navItems.map((item) => {
+                  const isActive = pathname === item.path;
+                  const { Icon } = item;
+                  return (
+                    <motion.button
+                      key={item.path}
+                      onClick={() => handleNavClick(item.path)}
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
+                      className={`relative flex items-center gap-1.5 px-4 py-2 rounded-2xl text-sm font-nunito font-700 transition-all duration-200 ${
+                        isActive
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md shadow-purple-200'
+                          : 'text-purple-600 hover:bg-white/70 hover:text-purple-800 hover:shadow-sm'
+                      }`}
+                    >
+                      <Icon size={15} className={isActive ? 'text-white' : 'text-purple-400'} />
+                      <span>{item.label}</span>
+                    </motion.button>
+                  );
+                })}
+              </nav>
 
-              {isHomePage && (
-                <>
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    onClick={handleEnableNotifications}
-                    className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-2xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center transition-colors"
-                    aria-label="Notifications"
-                  >
-                    <Bell size={18} className={notifGranted ? 'text-green-500' : 'text-purple-500'} />
-                  </motion.button>
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowSettings(true)}
-                    className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-2xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-500 transition-colors"
-                    aria-label="Settings"
-                  >
-                    <Settings size={18} />
-                  </motion.button>
-                </>
-              )}
+              {/* RIGHT: Actions */}
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                {/* Settings & Notifications — visible on Home page only */}
+                {isHomePage && (
+                  <>
+                    <motion.button
+                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={handleEnableNotifications}
+                      className="w-10 h-10 rounded-2xl bg-white/60 hover:bg-white/90 border border-white/60 flex items-center justify-center transition-all duration-200 shadow-sm"
+                      aria-label="Notifications"
+                    >
+                      <Bell size={17} className={notifGranted ? 'text-green-500' : 'text-purple-500'} />
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() => setShowSettings(true)}
+                      className="w-10 h-10 rounded-2xl bg-white/60 hover:bg-white/90 border border-white/60 flex items-center justify-center text-purple-500 transition-all duration-200 shadow-sm"
+                      aria-label="Settings"
+                    >
+                      <Settings size={17} />
+                    </motion.button>
+                  </>
+                )}
+
+                {/* Mobile Hamburger */}
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setShowMobileMenu(v => !v)}
+                  className="md:hidden w-10 h-10 rounded-2xl bg-white/60 hover:bg-white/90 border border-white/60 flex items-center justify-center text-purple-600 transition-all duration-200 shadow-sm"
+                  aria-label="Toggle navigation menu"
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    {showMobileMenu ? (
+                      <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                        <X size={18} />
+                      </motion.div>
+                    ) : (
+                      <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                        <Menu size={18} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              </div>
             </div>
           </div>
 
+          {/* Mobile Dropdown Menu */}
           <AnimatePresence>
-            {showMenu && (
+            {showMobileMenu && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-                className="overflow-hidden border-t border-purple-100/60 bg-white/95 backdrop-blur-xl"
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ type: 'spring', stiffness: 340, damping: 30 }}
+                className="md:hidden border-t border-white/40 bg-white/80 backdrop-blur-2xl"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(243,232,255,0.80) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
               >
-                <nav className="max-w-screen-2xl mx-auto px-4 py-3 flex flex-col gap-1">
+                <nav className="max-w-screen-xl mx-auto px-4 py-3 flex flex-col gap-1">
                   {navItems.map((item) => {
                     const isActive = pathname === item.path;
                     const { Icon } = item;
                     return (
                       <motion.button
                         key={item.path}
-                        whileTap={{ scale: 0.97 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={() => handleNavClick(item.path)}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-nunito font-600 transition-all duration-200 text-left w-full min-h-[44px] ${
+                        className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-nunito font-700 transition-all duration-200 text-left w-full ${
                           isActive
-                            ? 'bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700' :'text-purple-500 hover:bg-purple-50 hover:text-purple-700'
+                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md shadow-purple-200/50'
+                            : 'text-purple-600 hover:bg-purple-50 hover:text-purple-800'
                         }`}
                       >
-                        <Icon size={18} className={isActive ? 'text-purple-600' : 'text-purple-400'} />
+                        <Icon size={18} className={isActive ? 'text-white' : 'text-purple-400'} />
                         <span>{item.label}</span>
-                        {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-purple-400" />}
+                        {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white/70" />}
                       </motion.button>
                     );
                   })}
+
+                  {/* Settings & Notifications in mobile menu (home page only) */}
+                  {isHomePage && (
+                    <div className="flex gap-2 pt-1 pb-1 border-t border-purple-100/60 mt-1">
+                      <button
+                        onClick={() => { setShowMobileMenu(false); handleEnableNotifications(); }}
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-purple-50 text-purple-600 font-nunito font-700 text-sm hover:bg-purple-100 transition-colors"
+                      >
+                        <Bell size={15} className={notifGranted ? 'text-green-500' : 'text-purple-500'} />
+                        <span>Notifications</span>
+                      </button>
+                      <button
+                        onClick={() => { setShowMobileMenu(false); setShowSettings(true); }}
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-purple-50 text-purple-600 font-nunito font-700 text-sm hover:bg-purple-100 transition-colors"
+                      >
+                        <Settings size={15} />
+                        <span>Settings</span>
+                      </button>
+                    </div>
+                  )}
                 </nav>
               </motion.div>
             )}
@@ -302,7 +370,8 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
         </header>
       )}
 
-      <main className="max-w-screen-2xl mx-auto px-4 py-4 xl:px-8 2xl:px-12 pt-20" style={{ scrollBehavior: 'smooth' }}>
+      {/* Main Content — full width, padded top for fixed header */}
+      <main className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8" style={{ scrollBehavior: 'smooth' }}>
         {children}
       </main>
 
@@ -438,7 +507,6 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                 {/* NOTIFICATIONS TAB */}
                 {activeSettingsTab === 'notifications' && (
                   <div className="space-y-3">
-                    {/* Browser Notifications toggle */}
                     <div className="bg-white/70 rounded-3xl border border-purple-100/60 overflow-hidden">
                       <button
                         onClick={handleEnableNotifications}
@@ -461,7 +529,6 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                       </button>
                     </div>
 
-                    {/* Reminder toggles — only visible when notifications are granted */}
                     {!notifGranted ? (
                       <div className="bg-amber-50 border border-amber-100 rounded-3xl p-4 text-center">
                         <p className="text-2xl mb-2">🔔</p>
@@ -495,7 +562,6 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                             </div>
                           </button>
 
-                          {/* Time picker — shown when toggling ON or when changing time */}
                           <AnimatePresence>
                             {showDailyTimePicker && (
                               <motion.div
@@ -535,7 +601,6 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                             )}
                           </AnimatePresence>
 
-                          {/* Show set time with Change Time option */}
                           {dailyReminder && dailyReminderTime && !showDailyTimePicker && (
                             <div className="px-4 pb-3 flex items-center gap-2 border-t border-purple-50 pt-2">
                               <Clock size={13} className="text-purple-400" />
