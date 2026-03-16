@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Clock, Star, CheckCircle } from 'lucide-react';
 
@@ -93,6 +93,41 @@ const cards = [
   },
 ];
 
+// Scroll-reveal wrapper using IntersectionObserver
+function ScrollRevealCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0px)' : 'translateY(32px)',
+        transition: `opacity 0.55s cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform 0.55s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function SelfCareGrid() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -137,96 +172,103 @@ export default function SelfCareGrid() {
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <AnimatePresence mode="popLayout">
           {filtered?.map((card, i) => (
-            <motion.div
-              key={card?.id}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ delay: i * 0.05 }}
-              whileHover={{ y: -6, scale: 1.02, boxShadow: '0 16px 40px rgba(139,92,246,0.18)' }}
-              whileTap={{ scale: 0.98, y: 0 }}
-              className={`${card?.gradient} rounded-3xl border border-white/60 shadow-sm overflow-hidden cursor-pointer transition-shadow duration-300`}
-              onClick={() => setExpanded(expanded === card?.id ? null : card?.id)}
-            >
-              <div className="p-5">
-                <div className="flex items-start justify-between mb-3">
-                  <motion.span
-                    className="text-4xl"
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{ duration: 3, repeat: Infinity, delay: i * 0.3 }}
-                  >
-                    {card?.emoji}
-                  </motion.span>
-                  <div className="flex items-center gap-1.5">
-                    {counts[card.id] > 0 && (
-                      <span className={`text-[10px] font-nunito font-700 px-2 py-0.5 rounded-full bg-white/60 ${card.textColor}`}>
-                        Done {counts[card.id]}×
-                      </span>
-                    )}
-                    <div className="flex items-center gap-1 bg-white/50 rounded-xl px-2 py-1">
-                      <Star size={11} className={`${card?.textColor} fill-current`} />
-                      <span className={`text-xs font-dm ${card?.textColor} font-medium`}>{card?.rating}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <h3 className={`font-nunito font-700 text-base ${card?.textColor} mb-1`}>{card?.title}</h3>
-                <p className={`text-xs font-dm ${card?.textColor} opacity-70 leading-relaxed mb-3`}>{card?.desc}</p>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center gap-1 ${card?.textColor} opacity-70`}>
-                      <Clock size={12} />
-                      <span className="text-xs font-dm">{card?.duration}</span>
-                    </div>
-                    <span className={`text-xs font-dm px-2 py-0.5 rounded-full bg-white/40 ${card?.textColor}`}>
-                      {card?.difficulty}
-                    </span>
-                  </div>
-                  <motion.div
-                    animate={{ rotate: expanded === card?.id ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <ChevronDown size={16} className={`${card?.textColor} opacity-60`} />
-                  </motion.div>
-                </div>
-              </div>
-
-              <AnimatePresence>
-                {expanded === card?.id && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-5 pb-5">
-                      <div className="bg-white/40 rounded-2xl p-3 border border-white/60 mb-3">
-                        <p className={`text-xs font-nunito font-700 ${card?.textColor} mb-2 uppercase tracking-wide`}>Steps</p>
-                        <ol className="space-y-1.5">
-                          {card?.steps?.map((step, si) => (
-                            <li key={si} className={`flex items-start gap-2 text-xs font-dm ${card?.textColor} opacity-80`}>
-                              <span className="w-4 h-4 rounded-full bg-white/60 flex items-center justify-center text-[10px] font-nunito font-700 flex-shrink-0 mt-0.5">{si + 1}</span>
-                              {step}
-                            </li>
-                          ))}
-                        </ol>
+            <ScrollRevealCard key={card?.id} delay={i * 60}>
+              <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{
+                  y: -8,
+                  scale: 1.03,
+                  boxShadow: '0 20px 48px rgba(139,92,246,0.22)',
+                  transition: { duration: 0.25, ease: 'easeOut' },
+                }}
+                whileTap={{ scale: 0.97, y: 0 }}
+                className={`${card?.gradient} rounded-3xl border border-white/60 shadow-sm overflow-hidden cursor-pointer transition-shadow duration-300`}
+                onClick={() => setExpanded(expanded === card?.id ? null : card?.id)}
+              >
+                <div className="p-5">
+                  <div className="flex items-start justify-between mb-3">
+                    <motion.span
+                      className="text-4xl"
+                      animate={{ y: [0, -5, 0] }}
+                      transition={{ duration: 3, repeat: Infinity, delay: i * 0.3 }}
+                    >
+                      {card?.emoji}
+                    </motion.span>
+                    <div className="flex items-center gap-1.5">
+                      {counts[card.id] > 0 && (
+                        <span className={`text-[10px] font-nunito font-700 px-2 py-0.5 rounded-full bg-white/60 ${card.textColor}`}>
+                          Done {counts[card.id]}×
+                        </span>
+                      )}
+                      <div className="flex items-center gap-1 bg-white/50 rounded-xl px-2 py-1">
+                        <Star size={11} className={`${card?.textColor} fill-current`} />
+                        <span className={`text-xs font-dm ${card?.textColor} font-medium`}>{card?.rating}</span>
                       </div>
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        onClick={(e) => markDone(e, card.id)}
-                        className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-white/60 border border-white/80 font-nunito font-700 text-sm ${card.textColor} hover:bg-white/80 transition-colors min-h-[44px]`}
-                      >
-                        <CheckCircle size={15} />
-                        Mark as Done {counts[card.id] ? `(${counts[card.id]}×)` : ''}
-                      </motion.button>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+                  </div>
+
+                  <h3 className={`font-nunito font-700 text-base ${card?.textColor} mb-1`}>{card?.title}</h3>
+                  <p className={`text-xs font-dm ${card?.textColor} opacity-70 leading-relaxed mb-3`}>{card?.desc}</p>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`flex items-center gap-1 ${card?.textColor} opacity-70`}>
+                        <Clock size={12} />
+                        <span className="text-xs font-dm">{card?.duration}</span>
+                      </div>
+                      <span className={`text-xs font-dm px-2 py-0.5 rounded-full bg-white/40 ${card?.textColor}`}>
+                        {card?.difficulty}
+                      </span>
+                    </div>
+                    <motion.div
+                      animate={{ rotate: expanded === card?.id ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown size={16} className={`${card?.textColor} opacity-60`} />
+                    </motion.div>
+                  </div>
+                </div>
+
+                <AnimatePresence>
+                  {expanded === card?.id && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5">
+                        <div className="bg-white/40 rounded-2xl p-3 border border-white/60 mb-3">
+                          <p className={`text-xs font-nunito font-700 ${card?.textColor} mb-2 uppercase tracking-wide`}>Steps</p>
+                          <ol className="space-y-1.5">
+                            {card?.steps?.map((step, si) => (
+                              <li key={si} className={`flex items-start gap-2 text-xs font-dm ${card?.textColor} opacity-80`}>
+                                <span className="w-4 h-4 rounded-full bg-white/60 flex items-center justify-center text-[10px] font-nunito font-700 flex-shrink-0 mt-0.5">{si + 1}</span>
+                                {step}
+                              </li>
+                            ))}
+                          </ol>
+                        </div>
+                        <motion.button
+                          whileHover={{ scale: 1.03, boxShadow: '0 8px 24px rgba(139,92,246,0.18)', y: -2 }}
+                          whileTap={{ scale: 0.95, y: 0 }}
+                          onClick={(e) => markDone(e, card.id)}
+                          className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-white/60 border border-white/80 font-nunito font-700 text-sm ${card.textColor} hover:bg-white/80 transition-colors min-h-[44px]`}
+                        >
+                          <CheckCircle size={15} />
+                          Mark as Done {counts[card.id] ? `(${counts[card.id]}×)` : ''}
+                        </motion.button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            </ScrollRevealCard>
           ))}
         </AnimatePresence>
       </div>

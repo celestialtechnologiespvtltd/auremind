@@ -100,7 +100,13 @@ export default function SoundPlayer() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            whileHover={{ y: -3 }}
+            whileHover={{
+              y: -6,
+              scale: 1.04,
+              boxShadow: '0 16px 36px rgba(139,92,246,0.22)',
+              transition: { duration: 0.22, ease: 'easeOut' },
+            }}
+            whileTap={{ scale: 0.97, y: 0 }}
             className={`${s.gradient} rounded-3xl p-4 border border-white/60 shadow-sm transition-all duration-300 ${playing === i ? 'ring-2 ring-offset-1 ring-purple-300 shadow-lg' : ''}`}
           >
             <div className="flex flex-col items-center gap-2">
@@ -129,6 +135,11 @@ export default function SoundPlayer() {
               )}
 
               <motion.button
+                whileHover={{
+                  scale: 1.15,
+                  boxShadow: '0 8px 20px rgba(139,92,246,0.25)',
+                  transition: { duration: 0.18, ease: 'easeOut' },
+                }}
                 whileTap={{ scale: 0.85 }}
                 onClick={() => toggle(i)}
                 className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all shadow-sm ${

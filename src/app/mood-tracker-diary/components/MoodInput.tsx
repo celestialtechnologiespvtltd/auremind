@@ -71,7 +71,14 @@ export default function MoodInput({ onNoteSaved }: MoodInputProps) {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300 }}
-            className={`w-20 h-20 rounded-4xl bg-gradient-to-br ${current?.color} flex items-center justify-center text-5xl shadow-md mb-2 border border-white/60`}
+            whileHover={{
+              scale: 1.12,
+              y: -6,
+              boxShadow: '0 16px 36px rgba(139,92,246,0.28)',
+              transition: { duration: 0.22, ease: 'easeOut' },
+            }}
+            whileTap={{ scale: 0.95, y: 0 }}
+            className={`w-20 h-20 rounded-4xl bg-gradient-to-br ${current?.color} flex items-center justify-center text-5xl shadow-md mb-2 border border-white/60 cursor-pointer`}
           >
             {current?.emoji}
           </motion.div>
@@ -107,8 +114,13 @@ export default function MoodInput({ onNoteSaved }: MoodInputProps) {
         </div>
 
         <motion.button
-          whileTap={{ scale: 0.97 }}
-          whileHover={{ scale: 1.01 }}
+          whileHover={{
+            scale: 1.04,
+            y: -3,
+            boxShadow: '0 12px 32px rgba(139,92,246,0.35)',
+            transition: { duration: 0.22, ease: 'easeOut' },
+          }}
+          whileTap={{ scale: 0.97, y: 0 }}
           onClick={() => { setPendingMood(mood); setShowEditor(true); }}
           className="w-full flex items-center justify-center gap-2.5 py-3 rounded-3xl bg-gradient-to-r from-purple-400 to-pink-400 text-white font-nunito font-700 text-sm shadow-md hover:shadow-lg transition-shadow min-h-[44px]"
         >

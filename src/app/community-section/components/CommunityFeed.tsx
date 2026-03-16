@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, Share2, Send, ShieldCheck, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
@@ -142,6 +142,41 @@ const initialPosts = [
     commentList: [],
   },
 ];
+
+// Scroll-reveal wrapper
+function ScrollRevealCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0px)' : 'translateY(28px)',
+        transition: `opacity 0.55s cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform 0.55s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function CommunityFeed() {
   const [posts, setPosts] = useState(initialPosts);
@@ -340,189 +375,192 @@ export default function CommunityFeed() {
         )}
       </AnimatePresence>
 
-      {/* Community content — always rendered, blurred until disclaimer accepted */}
+      {/* Community content */}
       <motion.div
         animate={{ filter: disclaimerAccepted ? 'blur(0px)' : 'blur(4px)', pointerEvents: disclaimerAccepted ? 'auto' : 'none' }}
         transition={{ duration: 0.4 }}
         className="space-y-3 sm:space-y-4"
       >
-            {/* Share Your Experience Card — always visible after disclaimer */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-white/70 backdrop-blur-sm rounded-3xl border border-white/60 shadow-sm p-4 sm:p-5"
+        {/* Share Your Experience Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white/70 backdrop-blur-sm rounded-3xl border border-white/60 shadow-sm p-4 sm:p-5"
+        >
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shadow-sm flex-shrink-0">
+              <MessageSquare size={17} className="text-white" />
+            </div>
+            <h3 className="font-nunito font-700 text-base text-purple-900">Share Your Experience</h3>
+          </div>
+
+          <p className="text-xs font-dm text-purple-500 mb-2.5 leading-relaxed">
+            Your voice matters. Share what you&apos;re going through.
+          </p>
+
+          <textarea
+            value={shareText}
+            onChange={(e) => setShareText(e.target.value)}
+            placeholder="Share your experience or problem with the community..."
+            rows={4}
+            className="w-full bg-purple-50/50 rounded-2xl p-3.5 text-sm font-dm text-purple-900 placeholder-purple-300 border border-purple-100 outline-none resize-none focus:ring-2 focus:ring-purple-200 transition-all leading-relaxed mb-3"
+          />
+
+          <div className="flex justify-end">
+            <motion.button
+              whileHover={{ scale: 1.04, boxShadow: '0 8px 24px rgba(139,92,246,0.25)', y: -2 }}
+              whileTap={{ scale: 0.95, y: 0 }}
+              onClick={submitShareExperience}
+              disabled={isSharing || !shareText.trim()}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md disabled:opacity-50 transition-all"
             >
-              {/* Card Title */}
-              <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shadow-sm flex-shrink-0">
-                  <MessageSquare size={17} className="text-white" />
-                </div>
-                <h3 className="font-nunito font-700 text-base text-purple-900">Share Your Experience</h3>
-              </div>
+              {isSharing ? (
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+                  <Send size={14} />
+                </motion.div>
+              ) : <Send size={14} />}
+              {isSharing ? 'Posting...' : 'Post to Community'}
+            </motion.button>
+          </div>
+        </motion.div>
 
-              {/* Label */}
-              <p className="text-xs font-dm text-purple-500 mb-2.5 leading-relaxed">
-                Your voice matters. Share what you&apos;re going through.
-              </p>
-
-              {/* Textarea */}
-              <textarea
-                value={shareText}
-                onChange={(e) => setShareText(e.target.value)}
-                placeholder="Share your experience or problem with the community..."
-                rows={4}
-                className="w-full bg-purple-50/50 rounded-2xl p-3.5 text-sm font-dm text-purple-900 placeholder-purple-300 border border-purple-100 outline-none resize-none focus:ring-2 focus:ring-purple-200 transition-all leading-relaxed mb-3"
-              />
-
-              {/* Submit Button */}
-              <div className="flex justify-end">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={submitShareExperience}
-                  disabled={isSharing || !shareText.trim()}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md disabled:opacity-50 transition-all"
-                >
-                  {isSharing ? (
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-                      <Send size={14} />
-                    </motion.div>
-                  ) : <Send size={14} />}
-                  {isSharing ? 'Posting...' : 'Post to Community'}
-                </motion.button>
-              </div>
-            </motion.div>
-
-            {/* Posts */}
-            <AnimatePresence>
-              {posts.map((post, i) => (
-                <motion.div
-                  key={post.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ delay: i * 0.04 }}
-                  className="bg-white/70 backdrop-blur-sm rounded-3xl border border-white/60 shadow-sm overflow-hidden"
-                >
-                  <div className="p-3 sm:p-4">
-                    {/* Post header */}
-                    <div className="flex items-start gap-2.5 sm:gap-3 mb-3">
-                      <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl ${post.gradient} flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-white/60`}>
-                        {post.avatar}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-1">
-                          <div className="min-w-0">
-                            <p className="font-nunito font-700 text-sm text-purple-900 truncate">{post.name}</p>
-                            <p className="text-[10px] font-dm text-purple-400 truncate">{post.handle}</p>
-                          </div>
-                          <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                            <span className={`text-[10px] font-dm px-2 py-0.5 rounded-full whitespace-nowrap ${post.tagColor}`}>{post.tag}</span>
-                            <p className="text-[10px] font-dm text-purple-400 whitespace-nowrap">{post.time}</p>
-                          </div>
+        {/* Posts with scroll-reveal */}
+        <AnimatePresence>
+          {posts.map((post, i) => (
+            <ScrollRevealCard key={post.id} delay={Math.min(i * 50, 200)}>
+              <motion.div
+                exit={{ opacity: 0, scale: 0.95 }}
+                whileHover={{
+                  y: -4,
+                  boxShadow: '0 16px 40px rgba(139,92,246,0.12)',
+                  transition: { duration: 0.22, ease: 'easeOut' },
+                }}
+                className="bg-white/70 backdrop-blur-sm rounded-3xl border border-white/60 shadow-sm overflow-hidden"
+              >
+                <div className="p-3 sm:p-4">
+                  {/* Post header */}
+                  <div className="flex items-start gap-2.5 sm:gap-3 mb-3">
+                    <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl ${post.gradient} flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-white/60`}>
+                      {post.avatar}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-1">
+                        <div className="min-w-0">
+                          <p className="font-nunito font-700 text-sm text-purple-900 truncate">{post.name}</p>
+                          <p className="text-[10px] font-dm text-purple-400 truncate">{post.handle}</p>
+                        </div>
+                        <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                          <span className={`text-[10px] font-dm px-2 py-0.5 rounded-full whitespace-nowrap ${post.tagColor}`}>{post.tag}</span>
+                          <p className="text-[10px] font-dm text-purple-400 whitespace-nowrap">{post.time}</p>
                         </div>
                       </div>
-                    </div>
-
-                    {/* Post text */}
-                    <p className="text-sm font-dm text-purple-800 leading-relaxed whitespace-pre-line mb-3">{post.text}</p>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-3 sm:gap-4 pt-2 border-t border-purple-50">
-                      <motion.button
-                        whileTap={{ scale: 0.85 }}
-                        onClick={() => toggleLike(post.id)}
-                        className={`flex items-center gap-1.5 transition-colors ${post.liked ? 'text-pink-500' : 'text-purple-300 hover:text-pink-400'}`}
-                      >
-                        <Heart size={16} fill={post.liked ? 'currentColor' : 'none'} />
-                        <span className="text-xs font-dm tabular-nums">{post.likes}</span>
-                      </motion.button>
-                      <motion.button
-                        whileTap={{ scale: 0.85 }}
-                        onClick={() => setExpandedComments(expandedComments === post.id ? null : post.id)}
-                        className="flex items-center gap-1.5 text-purple-300 hover:text-purple-500 transition-colors"
-                      >
-                        <MessageCircle size={16} />
-                        <span className="text-xs font-dm tabular-nums">{post.comments}</span>
-                      </motion.button>
-                      <motion.button
-                        whileTap={{ scale: 0.85 }}
-                        onClick={() => { navigator.clipboard?.writeText(post.text); toast.success('Copied to share'); }}
-                        className="flex items-center gap-1.5 text-purple-300 hover:text-purple-500 transition-colors ml-auto"
-                      >
-                        <Share2 size={16} />
-                      </motion.button>
                     </div>
                   </div>
 
-                  {/* Comments section */}
-                  <AnimatePresence>
-                    {expandedComments === post.id && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-3 sm:px-4 pb-4 bg-purple-50/40 border-t border-purple-50">
-                          {post.commentList.length > 0 && (
-                            <div className="space-y-2.5 sm:space-y-3 pt-3 mb-3">
-                              {post.commentList.map((c, ci) => (
-                                <div key={ci} className="flex items-start gap-2">
-                                  <div className="w-7 h-7 rounded-xl bg-white/80 flex items-center justify-center text-sm flex-shrink-0 border border-purple-100">
-                                    {c.avatar}
-                                  </div>
-                                  <div className="flex-1 bg-white/60 rounded-2xl px-3 py-2 border border-purple-50 min-w-0">
-                                    <div className="flex items-center justify-between mb-0.5 gap-2">
-                                      <p className="font-nunito font-700 text-xs text-purple-900 truncate">{c.name}</p>
-                                      <p className="text-[10px] font-dm text-purple-400 flex-shrink-0">{c.time}</p>
-                                    </div>
-                                    <p className="text-xs font-dm text-purple-700 leading-relaxed">{c.text}</p>
-                                  </div>
+                  {/* Post text */}
+                  <p className="text-sm font-dm text-purple-800 leading-relaxed whitespace-pre-line mb-3">{post.text}</p>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-3 sm:gap-4 pt-2 border-t border-purple-50">
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
+                      whileHover={{ scale: 1.1 }}
+                      onClick={() => toggleLike(post.id)}
+                      className={`flex items-center gap-1.5 transition-colors ${post.liked ? 'text-pink-500' : 'text-purple-300 hover:text-pink-400'}`}
+                    >
+                      <Heart size={16} fill={post.liked ? 'currentColor' : 'none'} />
+                      <span className="text-xs font-dm tabular-nums">{post.likes}</span>
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
+                      whileHover={{ scale: 1.1 }}
+                      onClick={() => setExpandedComments(expandedComments === post.id ? null : post.id)}
+                      className="flex items-center gap-1.5 text-purple-300 hover:text-purple-500 transition-colors"
+                    >
+                      <MessageCircle size={16} />
+                      <span className="text-xs font-dm tabular-nums">{post.comments}</span>
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
+                      whileHover={{ scale: 1.1 }}
+                      onClick={() => { navigator.clipboard?.writeText(post.text); toast.success('Copied to share'); }}
+                      className="flex items-center gap-1.5 text-purple-300 hover:text-purple-500 transition-colors ml-auto"
+                    >
+                      <Share2 size={16} />
+                    </motion.button>
+                  </div>
+                </div>
+
+                {/* Comments section */}
+                <AnimatePresence>
+                  {expandedComments === post.id && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-3 sm:px-4 pb-4 bg-purple-50/40 border-t border-purple-50">
+                        {post.commentList.length > 0 && (
+                          <div className="space-y-2.5 sm:space-y-3 pt-3 mb-3">
+                            {post.commentList.map((c, ci) => (
+                              <div key={ci} className="flex items-start gap-2">
+                                <div className="w-7 h-7 rounded-xl bg-white/80 flex items-center justify-center text-sm flex-shrink-0 border border-purple-100">
+                                  {c.avatar}
                                 </div>
-                              ))}
-                            </div>
-                          )}
-                          <div className="flex items-center gap-2 pt-2">
-                            <div className="w-7 h-7 rounded-xl gradient-lavender flex items-center justify-center text-sm flex-shrink-0 border border-white/60">
-                              🌸
-                            </div>
-                            <div className="flex-1 flex items-center gap-2 bg-white/70 rounded-2xl px-3 py-2 border border-purple-100">
-                              <input
-                                value={newComment[post.id] || ''}
-                                onChange={(e) => setNewComment(prev => ({ ...prev, [post.id]: e.target.value }))}
-                                onKeyDown={(e) => { if (e.key === 'Enter') submitComment(post.id); }}
-                                placeholder="Add a kind comment..."
-                                className="flex-1 text-xs font-dm text-purple-900 placeholder-purple-300 bg-transparent outline-none min-w-0"
-                              />
-                              <motion.button
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => submitComment(post.id)}
-                                className="w-6 h-6 rounded-lg bg-purple-400 flex items-center justify-center text-white flex-shrink-0"
-                              >
-                                <Send size={11} />
-                              </motion.button>
-                            </div>
+                                <div className="flex-1 bg-white/60 rounded-2xl px-3 py-2 border border-purple-50 min-w-0">
+                                  <div className="flex items-center justify-between mb-0.5 gap-2">
+                                    <p className="font-nunito font-700 text-xs text-purple-900 truncate">{c.name}</p>
+                                    <p className="text-[10px] font-dm text-purple-400 flex-shrink-0">{c.time}</p>
+                                  </div>
+                                  <p className="text-xs font-dm text-purple-700 leading-relaxed">{c.text}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2 pt-2">
+                          <div className="w-7 h-7 rounded-xl gradient-lavender flex items-center justify-center text-sm flex-shrink-0 border border-white/60">
+                            🌸
+                          </div>
+                          <div className="flex-1 flex items-center gap-2 bg-white/70 rounded-2xl px-3 py-2 border border-purple-100">
+                            <input
+                              value={newComment[post.id] || ''}
+                              onChange={(e) => setNewComment(prev => ({ ...prev, [post.id]: e.target.value }))}
+                              onKeyDown={(e) => { if (e.key === 'Enter') submitComment(post.id); }}
+                              placeholder="Add a kind comment..."
+                              className="flex-1 text-xs font-dm text-purple-900 placeholder-purple-300 bg-transparent outline-none min-w-0"
+                            />
+                            <motion.button
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => submitComment(post.id)}
+                              className="w-6 h-6 rounded-lg bg-purple-400 flex items-center justify-center text-white flex-shrink-0"
+                            >
+                              <Send size={11} />
+                            </motion.button>
                           </div>
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            </ScrollRevealCard>
+          ))}
+        </AnimatePresence>
 
-            {/* Safety notice */}
-            <div className="bg-blue-50 border border-blue-100 rounded-3xl p-3 sm:p-4 flex items-start gap-3">
-              <span className="text-xl flex-shrink-0">🛡️</span>
-              <div>
-                <p className="font-nunito font-700 text-sm text-blue-800 mb-1">Safe Space Guidelines</p>
-                <p className="text-xs font-dm text-blue-700 leading-relaxed">
-                  Be kind, be honest, be supportive. No judgment here. If you&apos;re in crisis, please contact a professional helpline immediately.
-                </p>
-              </div>
-            </div>
+        {/* Safety notice */}
+        <div className="bg-blue-50 border border-blue-100 rounded-3xl p-3 sm:p-4 flex items-start gap-3">
+          <span className="text-xl flex-shrink-0">🛡️</span>
+          <div>
+            <p className="font-nunito font-700 text-sm text-blue-800 mb-1">Safe Space Guidelines</p>
+            <p className="text-xs font-dm text-blue-700 leading-relaxed">
+              Be kind, be honest, be supportive. No judgment here. If you&apos;re in crisis, please contact a professional helpline immediately.
+            </p>
+          </div>
+        </div>
       </motion.div>
     </div>
   );

@@ -80,6 +80,11 @@ export default function BreathingCircle() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={{
+        y: -4,
+        boxShadow: '0 20px 48px rgba(139,92,246,0.18)',
+        transition: { duration: 0.25, ease: 'easeOut' },
+      }}
       className="bg-white/70 backdrop-blur-sm rounded-3xl p-6 border border-white/60 shadow-md"
     >
       <div className="flex items-center justify-between mb-4">
@@ -189,7 +194,15 @@ export default function BreathingCircle() {
         )}
 
         <motion.button
-          whileTap={{ scale: 0.95 }}
+          whileHover={{
+            scale: 1.06,
+            y: -3,
+            boxShadow: isActive
+              ? '0 10px 28px rgba(239,68,68,0.25)'
+              : '0 10px 28px rgba(139,92,246,0.35)',
+            transition: { duration: 0.22, ease: 'easeOut' },
+          }}
+          whileTap={{ scale: 0.95, y: 0 }}
           onClick={toggle}
           className={`px-8 py-3 rounded-2xl font-nunito font-700 text-sm shadow-md transition-all ${
             isActive

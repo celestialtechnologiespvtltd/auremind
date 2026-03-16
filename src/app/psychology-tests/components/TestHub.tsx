@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import DepressionTest from './DepressionTest';
 import MetaphorTest from './MetaphorTest';
@@ -64,6 +64,41 @@ const tests = [
   },
 ];
 
+// Scroll-reveal wrapper
+function ScrollRevealCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0px)' : 'translateY(36px)',
+        transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function TestHub() {
   const [activeTest, setActiveTest] = useState<string | null>(null);
   const [pastResults, setPastResults] = useState<Array<{ test: string; date: string; result: string; emoji: string }>>([]);
@@ -99,33 +134,40 @@ export default function TestHub() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {tests?.map((test, i) => (
-          <motion.div
-            key={test?.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
-            whileHover={{ y: -4, boxShadow: '0 16px 40px rgba(205,180,219,0.4)' }}
-            whileTap={{ scale: 0.97 }}
-            className={`${test?.gradient} rounded-4xl p-6 border border-white/60 shadow-md cursor-pointer transition-all duration-300`}
-            onClick={() => setActiveTest(test?.id)}
-          >
-            <motion.div className="text-5xl mb-4" animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}>
-              {test?.emoji}
+          <ScrollRevealCard key={test?.id} delay={i * 80}>
+            <motion.div
+              whileHover={{
+                y: -6,
+                scale: 1.02,
+                boxShadow: '0 20px 48px rgba(205,180,219,0.45)',
+                transition: { duration: 0.25, ease: 'easeOut' },
+              }}
+              whileTap={{ scale: 0.97 }}
+              className={`${test?.gradient} rounded-4xl p-6 border border-white/60 shadow-md cursor-pointer transition-all duration-300`}
+              onClick={() => setActiveTest(test?.id)}
+            >
+              <motion.div className="text-5xl mb-4" animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}>
+                {test?.emoji}
+              </motion.div>
+              <span className={`text-[10px] font-dm px-2 py-1 rounded-full bg-white/40 ${test?.textColor} mb-2 inline-block`}>
+                {test?.tag}
+              </span>
+              <h3 className={`font-nunito font-800 text-xl ${test?.textColor} mt-2 mb-2`}>{test?.title}</h3>
+              <p className={`text-sm font-dm ${test?.textColor} opacity-70 leading-relaxed mb-4`}>{test?.desc}</p>
+              <div className={`flex items-center gap-3 text-xs font-dm ${test?.textColor} opacity-60`}>
+                <span>⏱ {test?.duration}</span>
+                <span>•</span>
+                <span>📝 {test?.questions} questions</span>
+              </div>
+              <motion.div
+                whileHover={{ scale: 1.04, boxShadow: '0 6px 20px rgba(139,92,246,0.15)' }}
+                whileTap={{ scale: 0.96 }}
+                className={`mt-4 w-full py-2.5 rounded-2xl bg-white/40 text-center font-nunito font-700 text-sm ${test?.textColor} border border-white/60 hover:bg-white/60 transition-colors`}
+              >
+                Begin Reflection →
+              </motion.div>
             </motion.div>
-            <span className={`text-[10px] font-dm px-2 py-1 rounded-full bg-white/40 ${test?.textColor} mb-2 inline-block`}>
-              {test?.tag}
-            </span>
-            <h3 className={`font-nunito font-800 text-xl ${test?.textColor} mt-2 mb-2`}>{test?.title}</h3>
-            <p className={`text-sm font-dm ${test?.textColor} opacity-70 leading-relaxed mb-4`}>{test?.desc}</p>
-            <div className={`flex items-center gap-3 text-xs font-dm ${test?.textColor} opacity-60`}>
-              <span>⏱ {test?.duration}</span>
-              <span>•</span>
-              <span>📝 {test?.questions} questions</span>
-            </div>
-            <motion.div className={`mt-4 w-full py-2.5 rounded-2xl bg-white/40 text-center font-nunito font-700 text-sm ${test?.textColor} border border-white/60 hover:bg-white/60 transition-colors`}>
-              Begin Reflection →
-            </motion.div>
-          </motion.div>
+          </ScrollRevealCard>
         ))}
       </div>
 
