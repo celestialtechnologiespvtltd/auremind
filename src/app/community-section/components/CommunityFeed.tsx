@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Share2, Send, X, ShieldCheck } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Send, X, ShieldCheck, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 
 const initialPosts = [
@@ -152,6 +152,8 @@ export default function CommunityFeed() {
   const [newComment, setNewComment] = useState<Record<number, string>>({});
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(true);
   const [disclaimerLoaded, setDisclaimerLoaded] = useState(false);
+  const [shareText, setShareText] = useState('');
+  const [isSharing, setIsSharing] = useState(false);
 
   useEffect(() => {
     const accepted = localStorage.getItem('mindbloom_community_disclaimer');
@@ -229,6 +231,42 @@ export default function CommunityFeed() {
     toast.success('Comment added!');
   };
 
+  const submitShareExperience = () => {
+    if (!shareText.trim()) return;
+    setIsSharing(true);
+    const stored = localStorage.getItem('mindbloom_user');
+    let handle = '@mindbloom_user';
+    let displayName = 'You';
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.username) handle = `@${parsed.username}`;
+        if (parsed.communityName) displayName = parsed.communityName;
+      } catch {}
+    }
+    setTimeout(() => {
+      const post = {
+        id: Date.now(),
+        avatar: '🌸',
+        name: displayName,
+        handle,
+        time: 'Just now',
+        gradient: 'gradient-lavender',
+        tag: 'Sharing',
+        tagColor: 'bg-pink-100 text-pink-700',
+        text: shareText,
+        likes: 0,
+        comments: 0,
+        liked: false,
+        commentList: [],
+      };
+      setPosts(prev => [post, ...prev]);
+      setShareText('');
+      setIsSharing(false);
+      toast.success('Your experience has been shared!');
+    }, 800);
+  };
+
   if (!disclaimerLoaded) return null;
 
   return (
@@ -283,6 +321,53 @@ export default function CommunityFeed() {
               <p className="text-sm font-dm text-purple-400 flex-1 truncate">Share something with the community...</p>
               <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0">
                 <Send size={14} className="text-white" />
+              </div>
+            </motion.div>
+
+            {/* Share Your Experience Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white/70 backdrop-blur-sm rounded-3xl border border-white/60 shadow-sm p-4 sm:p-5"
+            >
+              {/* Card Title */}
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shadow-sm flex-shrink-0">
+                  <MessageSquare size={17} className="text-white" />
+                </div>
+                <h3 className="font-nunito font-700 text-base text-purple-900">Share Your Experience</h3>
+              </div>
+
+              {/* Label */}
+              <p className="text-xs font-dm text-purple-500 mb-2.5 leading-relaxed">
+                Your voice matters. Share what you&apos;re going through.
+              </p>
+
+              {/* Textarea */}
+              <textarea
+                value={shareText}
+                onChange={(e) => setShareText(e.target.value)}
+                placeholder="Share your experience or problem with the community..."
+                rows={4}
+                className="w-full bg-purple-50/50 rounded-2xl p-3.5 text-sm font-dm text-purple-900 placeholder-purple-300 border border-purple-100 outline-none resize-none focus:ring-2 focus:ring-purple-200 transition-all leading-relaxed mb-3"
+              />
+
+              {/* Submit Button */}
+              <div className="flex justify-end">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={submitShareExperience}
+                  disabled={isSharing || !shareText.trim()}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md disabled:opacity-50 transition-all"
+                >
+                  {isSharing ? (
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+                      <Send size={14} />
+                    </motion.div>
+                  ) : <Send size={14} />}
+                  {isSharing ? 'Posting...' : 'Post to Community'}
+                </motion.button>
               </div>
             </motion.div>
 
