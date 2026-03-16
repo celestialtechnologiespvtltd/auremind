@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import AppLogo from '@/components/ui/AppLogo';
-import { Bell, Settings, X, User, Users, FileText, ChevronRight, Eye, EyeOff, Menu, Home, Users2, BookOpen, Brain, Star, Trash2, Info, Shield, Clock } from 'lucide-react';
+import { Bell, Settings, X, User, Users, FileText, ChevronRight, Eye, EyeOff, Menu, Home, Users2, BookOpen, Brain, Star, Trash2, Info, Shield, Clock, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -32,9 +32,9 @@ interface UserData {
 
 const navItems = [
 { label: 'Home', path: '/home-dashboard', Icon: Home },
-{ label: 'Motivation', path: '/daily-motivation', Icon: Star },
+{ label: 'Wellness', path: '/daily-motivation', Icon: Star },
 { label: 'Diary', path: '/mood-tracker-diary', Icon: BookOpen },
-{ label: 'Tests', path: '/psychology-tests', Icon: Brain },
+{ label: 'Mindscape', path: '/psychology-tests', Icon: Brain },
 { label: 'Community', path: '/community-section', Icon: Users2 }];
 
 
@@ -254,7 +254,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                     className={`relative flex items-center gap-1.5 px-4 py-2 rounded-2xl text-sm font-nunito font-700 transition-all duration-200 ${
                     isActive ?
                     'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md shadow-purple-200' :
-                    'text-purple-600 hover:bg-white/70 hover:text-purple-800 hover:shadow-sm'}`
+                    'text-purple-600 hover:bg-white/70 hover:text-purple-800'}`
                     }>
 
                       <Icon size={15} className={isActive ? 'text-white' : 'text-purple-400'} />
@@ -345,26 +345,6 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                       </motion.button>);
 
               })}
-
-                  {/* Settings & Notifications in mobile menu (home page only) */}
-                  {isHomePage &&
-              <div className="flex gap-2 pt-1 pb-1 border-t border-purple-100/60 mt-1">
-                      <button
-                  onClick={() => {setShowMobileMenu(false);handleEnableNotifications();}}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-purple-50 text-purple-600 font-nunito font-700 text-sm hover:bg-purple-100 transition-colors">
-
-                        <Bell size={15} className={notifGranted ? 'text-green-500' : 'text-purple-500'} />
-                        <span>Notifications</span>
-                      </button>
-                      <button
-                  onClick={() => {setShowMobileMenu(false);setShowSettings(true);}}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-purple-50 text-purple-600 font-nunito font-700 text-sm hover:bg-purple-100 transition-colors">
-
-                        <Settings size={15} />
-                        <span>Settings</span>
-                      </button>
-                    </div>
-              }
                 </nav>
               </motion.div>
           }
@@ -392,7 +372,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 60, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="bg-white/95 backdrop-blur-xl rounded-4xl w-full max-w-sm border border-purple-100 shadow-2xl max-h-[90vh] flex flex-col">
+            className="bg-white/95 backdrop-blur-xl rounded-4xl w-full max-w-sm border border-purple-100/60 shadow-2xl max-h-[90vh] flex flex-col">
 
               <div className="flex items-center justify-between p-5 pb-3 flex-shrink-0">
                 <h2 className="font-nunito font-800 text-lg text-purple-900">Settings</h2>
@@ -411,7 +391,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                 onClick={() => setActiveSettingsTab(tab)}
                 className={`flex-1 py-2 rounded-xl text-xs font-nunito font-700 capitalize transition-all min-h-[36px] ${
                 activeSettingsTab === tab ?
-                'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-sm' :
+                'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md shadow-purple-200/50' :
                 'bg-purple-50 text-purple-500 hover:bg-purple-100'}`
                 }>
 
@@ -482,8 +462,8 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
 
                     <div className="bg-white/70 rounded-3xl border border-purple-100/60 overflow-hidden">
                       <button
-                    onClick={toggleUsernameVisibility}
-                    className="w-full flex items-center gap-3 p-4 hover:bg-purple-50/50 transition-colors min-h-[44px]">
+                onClick={toggleUsernameVisibility}
+                className="w-full flex items-center gap-3 p-4 hover:bg-purple-50/50 transition-colors min-h-[44px]">
 
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${usernamePublic ? 'bg-purple-100' : 'bg-gray-100'}`}>
                           {usernamePublic ? <Eye size={16} className="text-purple-600" /> : <EyeOff size={16} className="text-gray-400" />}
@@ -789,6 +769,16 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                         </div>
                       </div>
                 )}
+                  <div className="bg-white/70 rounded-3xl border border-purple-100/60 p-4 flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+                      <Phone size={16} className="text-purple-500" />
+                    </div>
+                    <div>
+                      <p className="font-nunito font-700 text-sm text-purple-900">Contact Us</p>
+                      <p className="text-xs font-dm text-purple-500 leading-relaxed">Email: auremind@gmail.com</p>
+                      <p className="text-xs font-dm text-purple-500 leading-relaxed">Mobile: +91 84627 59314</p>
+                    </div>
+                  </div>
                   </div>
               }
               </div>

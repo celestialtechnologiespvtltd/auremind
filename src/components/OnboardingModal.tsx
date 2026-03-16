@@ -71,12 +71,20 @@ export default function OnboardingModal() {
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="text-6xl mb-3"
+                className="flex items-center justify-center mb-3"
               >
-                🌸
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shadow-lg">
+                  <span className="text-3xl">🌸</span>
+                </div>
               </motion.div>
-              <h1 className="font-nunito font-800 text-2xl text-purple-900">Welcome to AureMind</h1>
-              <p className="text-sm font-dm text-purple-500 mt-1">Your personal wellness sanctuary 🌿</p>
+              <h1 className="font-nunito font-800 text-2xl text-purple-900 tracking-tight">AureMind</h1>
+              <div className="mt-1 mb-3">
+                <p className="text-sm font-dm font-semibold text-purple-600 leading-snug">Elevate Your Mind</p>
+                <p className="text-sm font-dm font-semibold text-purple-600 leading-snug">Embrace Your Calm</p>
+              </div>
+              <p className="text-xs font-dm text-purple-400 leading-relaxed px-1">
+                AureMind is your personal mental wellness companion designed to help you understand your emotions, track your mood, and build a healthier mind through reflection, motivation, and community support.
+              </p>
             </div>
 
             {/* Step indicator */}

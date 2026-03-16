@@ -41,7 +41,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Tests',
+    label: 'Mindscape',
     path: '/psychology-tests',
     emoji: '🧠',
     doodle: (
@@ -52,7 +52,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Motivation',
+    label: 'Wellness',
     path: '/daily-motivation',
     emoji: '✨',
     doodle: (

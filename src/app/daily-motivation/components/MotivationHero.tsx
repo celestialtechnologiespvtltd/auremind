@@ -134,6 +134,7 @@ export default function MotivationHero() {
           )}
 
           <div className="relative z-10">
+            <p className="font-nunito font-700 text-xs text-purple-700 uppercase tracking-widest mb-3">Daily Motivation</p>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <motion.span

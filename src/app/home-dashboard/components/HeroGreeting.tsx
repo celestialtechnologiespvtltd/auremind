@@ -199,7 +199,7 @@ export default function HeroGreeting() {
                 {timeEmoji} {dateString}
               </p>
               <h1 className="font-nunito text-2xl font-800 text-purple-900 leading-tight">
-                {greeting}{username ? `, ${username}` : ''}! 🌸
+                {greeting}{username ? `, ${username}` : ''}!
               </h1>
               <p className="text-purple-600 text-sm mt-1 font-dm">
                 How are you feeling today?

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Share2, Send, X, ShieldCheck } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Send, ShieldCheck, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 
 const initialPosts = [
@@ -150,8 +150,11 @@ export default function CommunityFeed() {
   const [isPosting, setIsPosting] = useState(false);
   const [showComposer, setShowComposer] = useState(false);
   const [newComment, setNewComment] = useState<Record<number, string>>({});
-  const [disclaimerAccepted, setDisclaimerAccepted] = useState(true);
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [disclaimerLoaded, setDisclaimerLoaded] = useState(false);
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+  const [shareText, setShareText] = useState('');
+  const [isSharing, setIsSharing] = useState(false);
 
   useEffect(() => {
     const accepted = localStorage.getItem('mindbloom_community_disclaimer');
@@ -159,6 +162,7 @@ export default function CommunityFeed() {
       setDisclaimerAccepted(true);
     } else {
       setDisclaimerAccepted(false);
+      setShowDisclaimerModal(true);
     }
     setDisclaimerLoaded(true);
   }, []);
@@ -166,6 +170,7 @@ export default function CommunityFeed() {
   const acceptDisclaimer = () => {
     localStorage.setItem('mindbloom_community_disclaimer', 'true');
     setDisclaimerAccepted(true);
+    setShowDisclaimerModal(false);
   };
 
   const toggleLike = (id: number) => {
@@ -206,7 +211,6 @@ export default function CommunityFeed() {
       setPosts(prev => [post, ...prev]);
       setNewPost('');
       setIsPosting(false);
-      setShowComposer(false);
       toast.success('Your post is live!');
     }, 800);
   };
@@ -229,117 +233,165 @@ export default function CommunityFeed() {
     toast.success('Comment added!');
   };
 
+  const submitShareExperience = () => {
+    if (!shareText.trim()) return;
+    setIsSharing(true);
+    const stored = localStorage.getItem('mindbloom_user');
+    let handle = '@mindbloom_user';
+    let displayName = 'You';
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.username) handle = `@${parsed.username}`;
+        if (parsed.communityName) displayName = parsed.communityName;
+      } catch {}
+    }
+    setTimeout(() => {
+      const post = {
+        id: Date.now(),
+        avatar: '🌸',
+        name: displayName,
+        handle,
+        time: 'Just now',
+        gradient: 'gradient-lavender',
+        tag: 'Sharing',
+        tagColor: 'bg-pink-100 text-pink-700',
+        text: shareText,
+        likes: 0,
+        comments: 0,
+        liked: false,
+        commentList: [],
+      };
+      setPosts(prev => [post, ...prev]);
+      setShareText('');
+      setIsSharing(false);
+      toast.success('Your experience has been shared!');
+    }, 800);
+  };
+
   if (!disclaimerLoaded) return null;
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      {/* Disclaimer card — shown only on first visit */}
-      {!disclaimerAccepted && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl border p-4 sm:p-5 bg-amber-50 border-amber-200"
-        >
-          <div className="flex items-start gap-3">
-            <span className="text-xl sm:text-2xl flex-shrink-0">⚠️</span>
-            <div className="flex-1 min-w-0">
-              <p className="font-nunito font-700 text-sm text-amber-900 mb-1">Community Disclaimer</p>
-              <p className="text-xs font-dm text-amber-800 leading-relaxed mb-3">
-                This is a peer-support community, <strong>not a substitute for professional mental health care</strong>. Content shared here reflects personal experiences and opinions only. If you are in crisis or experiencing a mental health emergency, please contact a qualified professional or helpline immediately.
-              </p>
-              <p className="text-xs font-dm text-amber-700 leading-relaxed mb-4">
-                By continuing, you agree to be kind, supportive, and respectful. No harmful, abusive, or triggering content is permitted.
-              </p>
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={acceptDisclaimer}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-md"
-              >
-                <ShieldCheck size={15} />
-                I Understand & Agree
-              </motion.button>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Community content — only visible after disclaimer accepted */}
+      {/* Disclaimer Popup Modal */}
       <AnimatePresence>
-        {disclaimerAccepted && (
+        {showDisclaimerModal && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-3 sm:space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
           >
-            {/* Post composer trigger */}
             <motion.div
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setShowComposer(true)}
-              className="bg-white/70 backdrop-blur-sm rounded-3xl p-3 sm:p-4 border border-white/60 shadow-sm cursor-pointer flex items-center gap-3"
+              initial={{ opacity: 0, scale: 0.85, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.85, y: 30 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              className="relative w-full max-w-sm bg-amber-50 border border-amber-200 rounded-3xl shadow-2xl p-6 overflow-hidden"
             >
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl gradient-lavender flex items-center justify-center text-lg sm:text-xl border border-white/60 flex-shrink-0">
-                🌸
-              </div>
-              <p className="text-sm font-dm text-purple-400 flex-1 truncate">Share something with the community...</p>
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0">
-                <Send size={14} className="text-white" />
+              {/* Decorative background blob */}
+              <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-amber-200/30 blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-8 -left-8 w-24 h-24 rounded-full bg-orange-200/20 blur-2xl pointer-events-none" />
+
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="flex items-center gap-3 mb-4">
+                  <motion.span
+                    className="text-3xl"
+                    animate={{ rotate: [-5, 5, -5] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                  >
+                    ⚠️
+                  </motion.span>
+                  <div>
+                    <h2 className="font-nunito font-800 text-lg text-amber-900">Community Disclaimer</h2>
+                    <p className="text-xs font-dm text-amber-600">Please read before joining</p>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="bg-white/60 rounded-2xl p-4 border border-amber-100 mb-4 space-y-3">
+                  <p className="text-sm font-dm text-amber-800 leading-relaxed">
+                    This is a peer-support community, <strong>not a substitute for professional mental health care</strong>. Content shared here reflects personal experiences and opinions only.
+                  </p>
+                  <p className="text-sm font-dm text-amber-800 leading-relaxed">
+                    If you are in crisis or experiencing a mental health emergency, please contact a qualified professional or helpline immediately.
+                  </p>
+                  <div className="border-t border-amber-100 pt-3">
+                    <p className="text-xs font-dm text-amber-700 leading-relaxed">
+                      By continuing, you agree to be <strong>kind, supportive, and respectful</strong>. No harmful, abusive, or triggering content is permitted.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Action button */}
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={acceptDisclaimer}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-md"
+                >
+                  <ShieldCheck size={16} />
+                  I Understand &amp; Agree
+                </motion.button>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            {/* Composer modal */}
-            <AnimatePresence>
-              {showComposer && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 sm:p-4"
-                  onClick={(e) => { if (e.target === e.currentTarget) setShowComposer(false); }}
+      {/* Community content — always rendered, blurred until disclaimer accepted */}
+      <motion.div
+        animate={{ filter: disclaimerAccepted ? 'blur(0px)' : 'blur(4px)', pointerEvents: disclaimerAccepted ? 'auto' : 'none' }}
+        transition={{ duration: 0.4 }}
+        className="space-y-3 sm:space-y-4"
+      >
+            {/* Share Your Experience Card — always visible after disclaimer */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white/70 backdrop-blur-sm rounded-3xl border border-white/60 shadow-sm p-4 sm:p-5"
+            >
+              {/* Card Title */}
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shadow-sm flex-shrink-0">
+                  <MessageSquare size={17} className="text-white" />
+                </div>
+                <h3 className="font-nunito font-700 text-base text-purple-900">Share Your Experience</h3>
+              </div>
+
+              {/* Label */}
+              <p className="text-xs font-dm text-purple-500 mb-2.5 leading-relaxed">
+                Your voice matters. Share what you&apos;re going through.
+              </p>
+
+              {/* Textarea */}
+              <textarea
+                value={shareText}
+                onChange={(e) => setShareText(e.target.value)}
+                placeholder="Share your experience or problem with the community..."
+                rows={4}
+                className="w-full bg-purple-50/50 rounded-2xl p-3.5 text-sm font-dm text-purple-900 placeholder-purple-300 border border-purple-100 outline-none resize-none focus:ring-2 focus:ring-purple-200 transition-all leading-relaxed mb-3"
+              />
+
+              {/* Submit Button */}
+              <div className="flex justify-end">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={submitShareExperience}
+                  disabled={isSharing || !shareText.trim()}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md disabled:opacity-50 transition-all"
                 >
-                  <motion.div
-                    initial={{ y: 60, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 60, opacity: 0 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="bg-white/95 backdrop-blur-xl rounded-4xl p-5 sm:p-6 w-full max-w-lg border border-purple-100 shadow-2xl"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-nunito font-700 text-base text-purple-900">Share with Community</h3>
-                      <button
-                        onClick={() => setShowComposer(false)}
-                        className="w-8 h-8 rounded-xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-500 transition-colors"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <textarea
-                      value={newPost}
-                      onChange={(e) => setNewPost(e.target.value)}
-                      placeholder="What's on your mind? Share something kind, honest, or hopeful..."
-                      rows={5}
-                      className="w-full bg-purple-50/50 rounded-2xl p-4 text-sm font-dm text-purple-900 placeholder-purple-300 border border-purple-100 outline-none resize-none focus:ring-2 focus:ring-purple-200 transition-all leading-relaxed"
-                      autoFocus
-                    />
-                    <div className="flex items-center justify-between mt-3">
-                      <p className="text-xs font-dm text-purple-400">{newPost.length}/500</p>
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        onClick={submitPost}
-                        disabled={isPosting || !newPost.trim()}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md disabled:opacity-50 transition-all"
-                      >
-                        {isPosting ? (
-                          <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-                            <Send size={14} />
-                          </motion.div>
-                        ) : <Send size={14} />}
-                        {isPosting ? 'Posting...' : 'Post'}
-                      </motion.button>
-                    </div>
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  {isSharing ? (
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+                      <Send size={14} />
+                    </motion.div>
+                  ) : <Send size={14} />}
+                  {isSharing ? 'Posting...' : 'Post to Community'}
+                </motion.button>
+              </div>
+            </motion.div>
 
             {/* Posts */}
             <AnimatePresence>
@@ -467,13 +519,11 @@ export default function CommunityFeed() {
               <div>
                 <p className="font-nunito font-700 text-sm text-blue-800 mb-1">Safe Space Guidelines</p>
                 <p className="text-xs font-dm text-blue-700 leading-relaxed">
-                  Be kind, be honest, be supportive. No judgment here. If you're in crisis, please contact a professional helpline immediately.
+                  Be kind, be honest, be supportive. No judgment here. If you&apos;re in crisis, please contact a professional helpline immediately.
                 </p>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
