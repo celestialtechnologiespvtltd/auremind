@@ -26,45 +26,13 @@ const AppLogo = memo(function AppLogo({
       className={`flex items-center gap-2.5 ${onClick ? 'cursor-pointer hover:opacity-85 transition-opacity' : ''} ${className}`}
       onClick={onClick}
     >
-      {/* SVG Wave Mark */}
+      {/* Logo Image */}
       <div className="flex-shrink-0 relative" style={{ width: iconSize, height: iconSize }}>
-        <svg
-          width={iconSize}
-          height={iconSize}
-          viewBox="0 0 40 40"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <linearGradient id="waveGrad1" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#7c3aed" />
-              <stop offset="100%" stopColor="#a855f7" />
-            </linearGradient>
-            <linearGradient id="waveGrad2" x1="40" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#6d28d9" />
-              <stop offset="100%" stopColor="#c084fc" />
-            </linearGradient>
-          </defs>
-          {/* First wave ribbon */}
-          <path
-            d="M4 28 C8 28, 10 12, 16 12 C22 12, 24 28, 30 28 C34 28, 36 22, 36 20"
-            stroke="url(#waveGrad1)"
-            strokeWidth="4.5"
-            strokeLinecap="round"
-            fill="none"
-          />
-          {/* Second wave ribbon — offset */}
-          <path
-            d="M4 20 C8 20, 10 8, 16 8 C22 8, 24 32, 30 32 C34 32, 36 26, 36 24"
-            stroke="url(#waveGrad2)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            fill="none"
-            opacity="0.65"
-          />
-          {/* Dot accent */}
-          <circle cx="20" cy="20" r="2.5" fill="url(#waveGrad1)" opacity="0.9" />
-        </svg>
+        <img
+          src="/assets/images/ChatGPT_Image_Mar_16__2026__04_53_43_PM-1773660498579.png"
+          alt="AureMind logo"
+          style={{ width: iconSize, height: iconSize, objectFit: 'contain' }}
+        />
       </div>
 
       {/* Brand text */}

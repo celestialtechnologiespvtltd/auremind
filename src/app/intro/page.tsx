@@ -112,56 +112,13 @@ export default function IntroPage() {
 
         {/* Header — brand identity */}
         <div className="text-center mb-10 md:mb-14">
-          {/* Logo mark */}
+          {/* Logo image */}
           <div className="flex justify-center mb-4">
-            <div
-              className="relative w-20 h-20 rounded-2xl flex items-center justify-center"
-              style={{
-                background: 'linear-gradient(135deg, #ede9fe 0%, #f3e8ff 100%)',
-                boxShadow: '0 8px 32px rgba(124,58,237,0.25), 0 2px 8px rgba(109,40,217,0.15)',
-                border: '1.5px solid rgba(167,139,250,0.35)',
-              }}
-            >
-              <svg width="48" height="48" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="introWaveGrad1" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#7c3aed" />
-                    <stop offset="100%" stopColor="#a855f7" />
-                  </linearGradient>
-                  <linearGradient id="introWaveGrad2" x1="40" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#6d28d9" />
-                    <stop offset="100%" stopColor="#c084fc" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M4 28 C8 28, 10 12, 16 12 C22 12, 24 28, 30 28 C34 28, 36 22, 36 20"
-                  stroke="url(#introWaveGrad1)"
-                  strokeWidth="4.5"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <path
-                  d="M4 20 C8 20, 10 8, 16 8 C22 8, 24 32, 30 32 C34 32, 36 26, 36 24"
-                  stroke="url(#introWaveGrad2)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  fill="none"
-                  opacity="0.65"
-                />
-                <circle cx="20" cy="20" r="2.5" fill="url(#introWaveGrad1)" opacity="0.9" />
-              </svg>
-              {/* Glow ring */}
-              <div
-                className="absolute inset-0 rounded-2xl"
-                style={{
-                  background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
-                  opacity: 0.2,
-                  filter: 'blur(10px)',
-                  transform: 'scale(1.35)',
-                  zIndex: -1,
-                }}
-              />
-            </div>
+            <img
+              src="/assets/images/ChatGPT_Image_Mar_16__2026__04_53_43_PM-1773660498579.png"
+              alt="AureMind logo"
+              style={{ width: '100px', height: '100px', objectFit: 'contain' }}
+            />
           </div>
 
           <h1
