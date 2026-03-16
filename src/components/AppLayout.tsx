@@ -207,7 +207,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
   const clearAllData = useCallback(() => {
     const keys = ['mindbloom_user', 'mindbloom_streak', 'mindbloom_notes', 'mindbloom_mood_entries',
     'wellness-tips-checked', 'wellness-tips-date', 'mindbloom_exercise_counts',
-    'mindbloom_test_results', 'mindbloom_sound_prefs'];
+    'mindbloom_test_results', 'mindbloom_sound_prefs', 'auremind_intro_seen'];
     keys.forEach((k) => localStorage.removeItem(k));
     setShowClearConfirm(false);
     setShowSettings(false);
