@@ -27,7 +27,7 @@ export default function BreathingCircle() {
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [countdown, setCountdown] = useState(0);
   const [cycles, setCycles] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const tech = techniques[activeTech];
   const phase = tech.phases[phaseIdx];
@@ -48,7 +48,9 @@ export default function BreathingCircle() {
       });
     }, 1000);
 
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [isActive, phaseIdx, activeTech]);
 
   const toggle = () => {
@@ -78,7 +80,7 @@ export default function BreathingCircle() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/70 backdrop-blur-sm rounded-4xl p-6 border border-white/60 shadow-md"
+      className="bg-white/70 backdrop-blur-sm rounded-3xl p-6 border border-white/60 shadow-md"
     >
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -87,14 +89,13 @@ export default function BreathingCircle() {
         </div>
         {isActive && (
           <div className="text-right">
-            <p className="font-nunito font-800 text-xl text-purple-700 text-tabular">{cycles}</p>
+            <p className="font-nunito font-800 text-xl text-purple-700">{cycles}</p>
             <p className="text-xs font-dm text-purple-400">cycles</p>
           </div>
         )}
       </div>
 
-      {/* Technique selector */}
-      <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide">
+      <div className="flex gap-2 mb-6 overflow-x-auto">
         {techniques.map((t, i) => (
           <motion.button
             key={t.name}
@@ -111,10 +112,8 @@ export default function BreathingCircle() {
         ))}
       </div>
 
-      {/* Breathing animation */}
       <div className="flex flex-col items-center gap-6">
         <div className="relative w-44 h-44 flex items-center justify-center">
-          {/* Outermost glow */}
           <motion.div
             className={`absolute inset-0 rounded-full bg-gradient-to-br ${phase.color} opacity-15`}
             animate={isActive ? {
@@ -122,7 +121,6 @@ export default function BreathingCircle() {
             } : { scale: 1 }}
             transition={{ duration: isActive ? phase.seconds : 0.5, ease: 'easeInOut' }}
           />
-          {/* Middle ring */}
           <motion.div
             className={`absolute inset-4 rounded-full bg-gradient-to-br ${phase.color} opacity-25`}
             animate={isActive ? {
@@ -130,7 +128,6 @@ export default function BreathingCircle() {
             } : { scale: 1 }}
             transition={{ duration: isActive ? phase.seconds : 0.5, ease: 'easeInOut' }}
           />
-          {/* Core */}
           <motion.div
             className={`relative w-28 h-28 rounded-full bg-gradient-to-br ${phase.color} shadow-lg border border-white/80 flex flex-col items-center justify-center`}
             animate={isActive ? {
@@ -148,7 +145,7 @@ export default function BreathingCircle() {
               >
                 {isActive ? (
                   <>
-                    <p className="font-nunito font-800 text-3xl text-white/90 text-tabular">{countdown}</p>
+                    <p className="font-nunito font-800 text-3xl text-white/90">{countdown}</p>
                     <p className="text-xs font-dm text-white/70">sec</p>
                   </>
                 ) : (
@@ -159,7 +156,6 @@ export default function BreathingCircle() {
           </motion.div>
         </div>
 
-        {/* Phase label */}
         <AnimatePresence mode="wait">
           <motion.div
             key={`${phaseIdx}-${isActive}`}
@@ -179,7 +175,6 @@ export default function BreathingCircle() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Phase dots */}
         {isActive && (
           <div className="flex gap-2">
             {tech.phases.map((p, i) => (
@@ -193,7 +188,6 @@ export default function BreathingCircle() {
           </div>
         )}
 
-        {/* Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={toggle}

@@ -20,16 +20,25 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
 
   body {
     font-family: 'DM Sans', sans-serif;
     @apply text-purple-900 bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50;
     min-height: 100vh;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Nunito', sans-serif;
+  }
+
+  /* Mobile performance optimizations */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
   }
 }
 
@@ -96,13 +105,34 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* GPU-accelerated animations */
+  .motion-safe {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Minimum tap target sizes */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Smooth scrolling containers */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Passive touch for scroll performance */
+  .touch-scroll {
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

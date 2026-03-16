@@ -1,3 +1,5 @@
+'use client';
+
 import AppLayout from '@/components/AppLayout';
 import MotivationHero from './components/MotivationHero';
 import BreathingCircle from './components/BreathingCircle';

@@ -40,7 +40,7 @@ export default function CommunityPreview() {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-nunito font-700 text-lg text-purple-900">Community 🤝</h2>
+        <h2 className="font-nunito font-700 text-lg text-purple-900">Community Posts🤝</h2>
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => router?.push('/community-section')}

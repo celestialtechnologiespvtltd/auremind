@@ -6,7 +6,6 @@ import WellnessTips from './components/WellnessTips';
 import SoundCards from './components/SoundCards';
 import CommunityPreview from './components/CommunityPreview';
 import FloatingDoodles from './components/FloatingDoodles';
-import StreakTracker from './components/StreakTracker';
 
 export default function HomeDashboardPage() {
   return (
@@ -14,13 +13,16 @@ export default function HomeDashboardPage() {
       <div className="relative space-y-6 py-2">
         <FloatingDoodles />
         <HeroGreeting />
-        <StreakTracker />
-        <QuickFeatureCards />
         <DailyQuoteCard />
+        <QuickFeatureCards />
         <WellnessTips />
         <SoundCards />
         <CommunityPreview />
         <div className="h-4" />
+        {/* Copyright footer */}
+        <footer className="text-center py-4 border-t border-purple-100/60">
+          <p className="text-xs font-dm text-purple-400">© 2026 MindBloom. All rights reserved.</p>
+        </footer>
       </div>
     </AppLayout>
   );

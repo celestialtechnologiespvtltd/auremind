@@ -34,7 +34,7 @@ const tipCategories = [
     headerColor: 'text-indigo-800',
     tips: [
       { title: 'Consistent wake time', desc: 'Wake up at the same time every day — even weekends. This anchors your circadian rhythm more powerfully than any supplement.' },
-      { title: 'Cool, dark room', desc: 'Your body temperature needs to drop 1–2°C to initiate sleep. Keep your bedroom cool (16–18°C) and as dark as possible.' },
+      { title: 'Cool, dark room', desc: 'Your body temperature needs to drop 1-2 degrees to initiate sleep. Keep your bedroom cool and as dark as possible.' },
       { title: 'Write tomorrow\'s list tonight', desc: 'Offload tomorrow\'s to-do list before bed. Research shows this reduces pre-sleep cognitive arousal and helps you fall asleep faster.' },
     ],
   },
@@ -46,7 +46,7 @@ const tipCategories = [
     tips: [
       { title: 'Reframe, don\'t suppress', desc: 'Instead of pushing away difficult emotions, ask: "What is this feeling trying to tell me?" Curiosity transforms suffering.' },
       { title: 'Celebrate micro-wins', desc: 'Your brain releases dopamine for any completed goal — big or tiny. Celebrate getting out of bed on hard days. It all counts.' },
-      { title: 'Self-compassion break', desc: 'When you\'re struggling, place your hand on your heart and say: "This is a moment of suffering. I am not alone in this." This activates self-soothing circuits.' },
+      { title: 'Self-compassion break', desc: 'When you are struggling, place your hand on your heart and say: "This is a moment of suffering. I am not alone in this."' },
     ],
   },
 ];

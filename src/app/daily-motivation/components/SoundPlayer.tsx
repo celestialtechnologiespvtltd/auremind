@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
-import { toast } from 'sonner';
 
 const sounds = [
   {
@@ -13,8 +12,6 @@ const sounds = [
     textColor: 'text-blue-800',
     bgBar: 'bg-blue-300',
     mood: 'Calming',
-    duration: '∞',
-    waveColor: '#A2D2FF',
     desc: 'Soft rainfall on forest leaves',
   },
   {
@@ -24,8 +21,6 @@ const sounds = [
     textColor: 'text-purple-800',
     bgBar: 'bg-purple-300',
     mood: 'Relaxing',
-    duration: '∞',
-    waveColor: '#CDB4DB',
     desc: 'Gentle waves rolling ashore',
   },
   {
@@ -35,8 +30,6 @@ const sounds = [
     textColor: 'text-pink-800',
     bgBar: 'bg-pink-300',
     mood: 'Peaceful',
-    duration: '∞',
-    waveColor: '#FFC8DD',
     desc: 'Soft piano melodies for focus',
   },
   {
@@ -46,8 +39,6 @@ const sounds = [
     textColor: 'text-green-800',
     bgBar: 'bg-green-300',
     mood: 'Grounding',
-    duration: '∞',
-    waveColor: '#b7ebd8',
     desc: 'Birds and morning forest breeze',
   },
 ];
@@ -56,15 +47,17 @@ export default function SoundPlayer() {
   const [playing, setPlaying] = useState<number | null>(null);
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(70);
+  const [msg, setMsg] = useState('');
 
   const toggle = (i: number) => {
     if (playing === i) {
       setPlaying(null);
-      toast('Paused 🎵');
+      setMsg('Paused 🎵');
     } else {
       setPlaying(i);
-      toast.success(`Now playing: ${sounds[i].name} ${sounds[i].emoji}`);
+      setMsg(`Now playing: ${sounds[i].name} ${sounds[i].emoji}`);
     }
+    setTimeout(() => setMsg(''), 2000);
   };
 
   return (
@@ -72,6 +65,9 @@ export default function SoundPlayer() {
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-nunito font-700 text-lg text-purple-900">Relaxing Sounds 🎵</h2>
         <div className="flex items-center gap-2">
+          {msg && (
+            <span className="text-xs font-dm text-purple-600 bg-white/70 px-2 py-1 rounded-full">{msg}</span>
+          )}
           <button
             onClick={() => setMuted(!muted)}
             className="w-8 h-8 rounded-xl bg-white/60 border border-purple-100 flex items-center justify-center text-purple-500 hover:bg-white/90 transition-all"
@@ -81,7 +77,6 @@ export default function SoundPlayer() {
         </div>
       </div>
 
-      {/* Volume control */}
       <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-3 border border-white/60 mb-4 flex items-center gap-3">
         <Volume2 size={15} className="text-purple-400 flex-shrink-0" />
         <input
@@ -95,7 +90,7 @@ export default function SoundPlayer() {
             background: `linear-gradient(to right, #CDB4DB 0%, #CDB4DB ${muted ? 0 : volume}%, #e8d5f5 ${muted ? 0 : volume}%, #e8d5f5 100%)`
           }}
         />
-        <span className="text-xs font-dm text-purple-500 text-tabular w-8 text-right">{muted ? 0 : volume}%</span>
+        <span className="text-xs font-dm text-purple-500 w-8 text-right">{muted ? 0 : volume}%</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -119,7 +114,6 @@ export default function SoundPlayer() {
               <p className={`font-nunito font-700 text-xs ${s.textColor} text-center leading-tight`}>{s.name}</p>
               <p className={`text-[10px] font-dm ${s.textColor} opacity-60 text-center`}>{s.desc}</p>
 
-              {/* Waveform animation */}
               {playing === i && (
                 <div className="flex gap-0.5 items-end h-5 my-1">
                   {[4, 7, 5, 8, 4, 6, 9, 5].map((h, j) => (
@@ -152,7 +146,6 @@ export default function SoundPlayer() {
         ))}
       </div>
 
-      {/* Now playing bar */}
       {playing !== null && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
