@@ -152,6 +152,7 @@ export default function CommunityFeed() {
   const [newComment, setNewComment] = useState<Record<number, string>>({});
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [disclaimerLoaded, setDisclaimerLoaded] = useState(false);
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   const [shareText, setShareText] = useState('');
   const [isSharing, setIsSharing] = useState(false);
 
@@ -161,6 +162,7 @@ export default function CommunityFeed() {
       setDisclaimerAccepted(true);
     } else {
       setDisclaimerAccepted(false);
+      setShowDisclaimerModal(true);
     }
     setDisclaimerLoaded(true);
   }, []);
@@ -168,6 +170,7 @@ export default function CommunityFeed() {
   const acceptDisclaimer = () => {
     localStorage.setItem('mindbloom_community_disclaimer', 'true');
     setDisclaimerAccepted(true);
+    setShowDisclaimerModal(false);
   };
 
   const toggleLike = (id: number) => {
@@ -270,44 +273,79 @@ export default function CommunityFeed() {
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      {/* Disclaimer card — shown only on first visit */}
-      {!disclaimerAccepted && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl border p-4 sm:p-5 bg-amber-50 border-amber-200"
-        >
-          <div className="flex items-start gap-3">
-            <span className="text-xl sm:text-2xl flex-shrink-0">⚠️</span>
-            <div className="flex-1 min-w-0">
-              <p className="font-nunito font-700 text-sm text-amber-900 mb-1">Community Disclaimer</p>
-              <p className="text-xs font-dm text-amber-800 leading-relaxed mb-3">
-                This is a peer-support community, <strong>not a substitute for professional mental health care</strong>. Content shared here reflects personal experiences and opinions only. If you are in crisis or experiencing a mental health emergency, please contact a qualified professional or helpline immediately.
-              </p>
-              <p className="text-xs font-dm text-amber-700 leading-relaxed mb-4">
-                By continuing, you agree to be kind, supportive, and respectful. No harmful, abusive, or triggering content is permitted.
-              </p>
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={acceptDisclaimer}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-md"
-              >
-                <ShieldCheck size={15} />
-                I Understand & Agree
-              </motion.button>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Community content — only visible after disclaimer accepted */}
+      {/* Disclaimer Popup Modal */}
       <AnimatePresence>
-        {disclaimerAccepted && (
+        {showDisclaimerModal && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-3 sm:space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
           >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.85, y: 30 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              className="relative w-full max-w-sm bg-amber-50 border border-amber-200 rounded-3xl shadow-2xl p-6 overflow-hidden"
+            >
+              {/* Decorative background blob */}
+              <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-amber-200/30 blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-8 -left-8 w-24 h-24 rounded-full bg-orange-200/20 blur-2xl pointer-events-none" />
+
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="flex items-center gap-3 mb-4">
+                  <motion.span
+                    className="text-3xl"
+                    animate={{ rotate: [-5, 5, -5] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                  >
+                    ⚠️
+                  </motion.span>
+                  <div>
+                    <h2 className="font-nunito font-800 text-lg text-amber-900">Community Disclaimer</h2>
+                    <p className="text-xs font-dm text-amber-600">Please read before joining</p>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="bg-white/60 rounded-2xl p-4 border border-amber-100 mb-4 space-y-3">
+                  <p className="text-sm font-dm text-amber-800 leading-relaxed">
+                    This is a peer-support community, <strong>not a substitute for professional mental health care</strong>. Content shared here reflects personal experiences and opinions only.
+                  </p>
+                  <p className="text-sm font-dm text-amber-800 leading-relaxed">
+                    If you are in crisis or experiencing a mental health emergency, please contact a qualified professional or helpline immediately.
+                  </p>
+                  <div className="border-t border-amber-100 pt-3">
+                    <p className="text-xs font-dm text-amber-700 leading-relaxed">
+                      By continuing, you agree to be <strong>kind, supportive, and respectful</strong>. No harmful, abusive, or triggering content is permitted.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Action button */}
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={acceptDisclaimer}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-md"
+                >
+                  <ShieldCheck size={16} />
+                  I Understand &amp; Agree
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Community content — always rendered, blurred until disclaimer accepted */}
+      <motion.div
+        animate={{ filter: disclaimerAccepted ? 'blur(0px)' : 'blur(4px)', pointerEvents: disclaimerAccepted ? 'auto' : 'none' }}
+        transition={{ duration: 0.4 }}
+        className="space-y-3 sm:space-y-4"
+      >
             {/* Share Your Experience Card — always visible after disclaimer */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -481,13 +519,11 @@ export default function CommunityFeed() {
               <div>
                 <p className="font-nunito font-700 text-sm text-blue-800 mb-1">Safe Space Guidelines</p>
                 <p className="text-xs font-dm text-blue-700 leading-relaxed">
-                  Be kind, be honest, be supportive. No judgment here. If you're in crisis, please contact a professional helpline immediately.
+                  Be kind, be honest, be supportive. No judgment here. If you&apos;re in crisis, please contact a professional helpline immediately.
                 </p>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
     </div>
   );
 }

@@ -282,13 +282,14 @@ const QuickFeatureCards = memo(function QuickFeatureCards() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  whileTap={{ scale: 0.92 }}
+                  whileHover={{ y: -6, scale: 1.04, boxShadow: '0 12px 32px rgba(139,92,246,0.22)' }}
+                  whileTap={{ scale: 0.92, y: 0 }}
                   onHoverStart={() => setActiveCard(globalIndex)}
                   onHoverEnd={() => setActiveCard(null)}
                   onFocus={() => setActiveCard(globalIndex)}
                   onBlur={() => setActiveCard(null)}
                   onClick={() => router.push(f.path)}
-                  className={`relative ${f.gradient} rounded-3xl p-4 flex flex-col items-center gap-3 shadow-sm border border-white/60 cursor-pointer transition-all duration-300 overflow-hidden w-full ${activeCard === globalIndex ? 'ring-2 ring-purple-300 shadow-lg' : ''}`}
+                  className={`relative ${f.gradient} rounded-3xl p-4 flex flex-col items-center gap-3 shadow-sm border border-white/60 cursor-pointer transition-shadow duration-300 overflow-hidden w-full ${activeCard === globalIndex ? 'ring-2 ring-purple-300 shadow-xl' : ''}`}
                 >
                   <AnimatePresence>
                     {activeCard === globalIndex && <CardAnimation type={f.type} />}

@@ -144,7 +144,9 @@ export default function SelfCareGrid() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ delay: i * 0.05 }}
-              className={`${card?.gradient} rounded-3xl border border-white/60 shadow-sm overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}
+              whileHover={{ y: -6, scale: 1.02, boxShadow: '0 16px 40px rgba(139,92,246,0.18)' }}
+              whileTap={{ scale: 0.98, y: 0 }}
+              className={`${card?.gradient} rounded-3xl border border-white/60 shadow-sm overflow-hidden cursor-pointer transition-shadow duration-300`}
               onClick={() => setExpanded(expanded === card?.id ? null : card?.id)}
             >
               <div className="p-5">

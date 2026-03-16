@@ -444,9 +444,10 @@ export default function ExerciseCards() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.06 }}
-            whileTap={{ scale: 0.94 }}
+            whileHover={{ y: -6, scale: 1.05, boxShadow: '0 14px 36px rgba(99,102,241,0.20)' }}
+            whileTap={{ scale: 0.94, y: 0 }}
             onClick={() => setSelectedExercise(ex)}
-            className={`relative bg-gradient-to-br ${ex.gradient} rounded-3xl p-4 flex flex-col items-center gap-1 min-w-[110px] border border-white/60 shadow-sm transition-all duration-300 overflow-hidden`}
+            className={`relative bg-gradient-to-br ${ex.gradient} rounded-3xl p-4 flex flex-col items-center gap-1 min-w-[110px] border border-white/60 shadow-sm transition-shadow duration-300 overflow-hidden`}
           >
             {/* In-card animation */}
             {ex.type === 'breathing' ? (

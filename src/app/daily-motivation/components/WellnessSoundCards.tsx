@@ -292,9 +292,10 @@ export default function WellnessSoundCards() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.05 }}
-            whileTap={{ scale: 0.94 }}
+            whileHover={{ y: -6, scale: 1.05, boxShadow: '0 14px 36px rgba(139,92,246,0.20)' }}
+            whileTap={{ scale: 0.94, y: 0 }}
             onClick={() => togglePlay(i)}
-            className={`relative ${s.gradient} rounded-3xl p-4 flex flex-col items-center gap-3 min-w-[100px] border border-white/60 shadow-sm transition-all duration-300 overflow-hidden min-h-[44px] ${playing === i ? 'ring-2 ring-purple-300 shadow-lg' : ''}`}
+            className={`relative ${s.gradient} rounded-3xl p-4 flex flex-col items-center gap-3 min-w-[100px] border border-white/60 shadow-sm transition-shadow duration-300 overflow-hidden min-h-[44px] ${playing === i ? 'ring-2 ring-purple-300 shadow-xl' : ''}`}
           >
             <AnimatePresence>
               {playing === i && <SoundAnimation type={s.type} />}
