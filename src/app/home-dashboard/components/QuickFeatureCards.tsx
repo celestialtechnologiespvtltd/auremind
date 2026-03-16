@@ -2,8 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { useState, useRef, useCallback, memo } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, memo } from 'react';
 
 const features = [
   {
@@ -193,110 +192,46 @@ function CardAnimation({ type }: { type: string }) {
 const QuickFeatureCards = memo(function QuickFeatureCards() {
   const router = useRouter();
   const [activeCard, setActiveCard] = useState<number | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const VISIBLE_COUNT = 3; // cards visible at once on mobile
-  const maxIndex = features.length - VISIBLE_COUNT;
-
-  const goNext = useCallback(() => {
-    setCurrentIndex((prev) => Math.min(prev + 1, maxIndex));
-  }, [maxIndex]);
-
-  const goPrev = useCallback(() => {
-    setCurrentIndex((prev) => Math.max(prev - 1, 0));
-  }, []);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current === null || touchStartY.current === null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX.current;
-    const dy = e.changedTouches[0].clientY - touchStartY.current;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-      if (dx < 0) goNext();
-      else goPrev();
-    }
-    touchStartX.current = null;
-    touchStartY.current = null;
-  };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-nunito font-700 text-lg text-purple-900">Help Yourself 🌈</h2>
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs font-dm text-purple-400 mr-1">Swipe to explore</span>
-          <button
-            onClick={goPrev}
-            disabled={currentIndex === 0}
-            aria-label="Previous"
-            className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all ${currentIndex === 0 ? 'border-purple-100 text-purple-200 cursor-not-allowed' : 'border-purple-200 text-purple-500 hover:bg-purple-50 active:scale-90'}`}
-          >
-            <ChevronLeft size={14} />
-          </button>
-          <button
-            onClick={goNext}
-            disabled={currentIndex >= maxIndex}
-            aria-label="Next"
-            className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all ${currentIndex >= maxIndex ? 'border-purple-100 text-purple-200 cursor-not-allowed' : 'border-purple-200 text-purple-500 hover:bg-purple-50 active:scale-90'}`}
-          >
-            <ChevronRight size={14} />
-          </button>
-        </div>
       </div>
 
-      {/* Mobile swipeable row */}
-      <div
-        ref={containerRef}
-        className="overflow-hidden"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        <motion.div
-          className="flex gap-3"
-          animate={{ x: `calc(-${currentIndex} * (110px + 12px))` }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        >
-          {features.map((f, i) => (
-            <motion.button
-              key={f.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.07 }}
-              whileTap={{ scale: 0.92 }}
-              onHoverStart={() => setActiveCard(i)}
-              onHoverEnd={() => setActiveCard(null)}
-              onFocus={() => setActiveCard(i)}
-              onBlur={() => setActiveCard(null)}
-              onClick={() => router.push(f.path)}
-              className={`relative ${f.gradient} rounded-3xl p-4 flex flex-col items-center gap-3 shadow-sm border border-white/60 cursor-pointer transition-all duration-300 overflow-hidden flex-shrink-0 min-w-[100px] min-h-[44px] ${activeCard === i ? 'ring-2 ring-purple-300 shadow-lg' : ''}`}
+      <div className="grid grid-cols-3 gap-3">
+        {features.map((f, i) => (
+          <motion.button
+            key={f.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.07 }}
+            whileTap={{ scale: 0.92 }}
+            onHoverStart={() => setActiveCard(i)}
+            onHoverEnd={() => setActiveCard(null)}
+            onFocus={() => setActiveCard(i)}
+            onBlur={() => setActiveCard(null)}
+            onClick={() => router.push(f.path)}
+            className={`relative ${f.gradient} rounded-3xl p-4 flex flex-col items-center gap-3 shadow-sm border border-white/60 cursor-pointer transition-all duration-300 overflow-hidden w-full ${activeCard === i ? 'ring-2 ring-purple-300 shadow-lg' : ''}`}
+          >
+            <AnimatePresence>
+              {activeCard === i && <CardAnimation type={f.type} />}
+            </AnimatePresence>
+
+            <motion.span
+              className="text-3xl relative z-10"
+              animate={activeCard === i ? { scale: [1, 1.18, 1] } : { scale: 1 }}
+              transition={{ duration: 1.4, repeat: activeCard === i ? Infinity : 0 }}
             >
-              <AnimatePresence>
-                {activeCard === i && <CardAnimation type={f.type} />}
-              </AnimatePresence>
-
-              <motion.span
-                className="text-3xl relative z-10"
-                animate={activeCard === i ? { scale: [1, 1.18, 1] } : { scale: 1 }}
-                transition={{ duration: 1.4, repeat: activeCard === i ? Infinity : 0 }}
-              >
-                {f.emoji}
-              </motion.span>
-              <div className="text-center relative z-10">
-                <p className={`font-nunito font-700 text-xs ${f.textColor} leading-tight`}>{f.title}</p>
-                <p className={`text-[10px] font-dm ${f.textColor} opacity-70 leading-tight mt-0.5`}>{f.desc}</p>
-              </div>
-            </motion.button>
-          ))}
-        </motion.div>
+              {f.emoji}
+            </motion.span>
+            <div className="text-center relative z-10">
+              <p className={`font-nunito font-700 text-xs ${f.textColor} leading-tight`}>{f.title}</p>
+              <p className={`text-[10px] font-dm ${f.textColor} opacity-70 leading-tight mt-0.5`}>{f.desc}</p>
+            </div>
+          </motion.button>
+        ))}
       </div>
-
     </div>
   );
 });
