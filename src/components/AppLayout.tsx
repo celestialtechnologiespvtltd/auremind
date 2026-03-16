@@ -32,10 +32,10 @@ interface UserData {
 
 const navItems = [
 { label: 'Home', path: '/home-dashboard', Icon: Home },
-{ label: 'Community', path: '/community-section', Icon: Users2 },
+{ label: 'Motivation', path: '/daily-motivation', Icon: Star },
 { label: 'Diary', path: '/mood-tracker-diary', Icon: BookOpen },
 { label: 'Tests', path: '/psychology-tests', Icon: Brain },
-{ label: 'Motivation', path: '/daily-motivation', Icon: Star }];
+{ label: 'Community', path: '/community-section', Icon: Users2 }];
 
 
 const LS_USER_KEY = 'mindbloom_user';
