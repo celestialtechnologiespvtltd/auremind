@@ -1,7 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/AppLayout';
 
 // Dynamic imports for all client-heavy components to prevent ChunkLoadError
@@ -27,6 +28,15 @@ function SectionSkeleton() {
 }
 
 export default function HomeDashboardPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const introSeen = localStorage.getItem('auremind_intro_seen');
+    if (!introSeen) {
+      router?.replace('/intro');
+    }
+  }, [router]);
+
   return (
     <AppLayout>
       <OnboardingModal />
