@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Share2, Send, X, ShieldCheck, MessageSquare } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Send, ShieldCheck, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 
 const initialPosts = [
@@ -150,7 +150,7 @@ export default function CommunityFeed() {
   const [isPosting, setIsPosting] = useState(false);
   const [showComposer, setShowComposer] = useState(false);
   const [newComment, setNewComment] = useState<Record<number, string>>({});
-  const [disclaimerAccepted, setDisclaimerAccepted] = useState(true);
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [disclaimerLoaded, setDisclaimerLoaded] = useState(false);
   const [shareText, setShareText] = useState('');
   const [isSharing, setIsSharing] = useState(false);
@@ -208,7 +208,6 @@ export default function CommunityFeed() {
       setPosts(prev => [post, ...prev]);
       setNewPost('');
       setIsPosting(false);
-      setShowComposer(false);
       toast.success('Your post is live!');
     }, 800);
   };
@@ -309,7 +308,7 @@ export default function CommunityFeed() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-3 sm:space-y-4"
           >
-            {/* Share Your Experience Card */}
+            {/* Share Your Experience Card — always visible after disclaimer */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -355,76 +354,6 @@ export default function CommunityFeed() {
                 </motion.button>
               </div>
             </motion.div>
-
-            {/* Post composer trigger */}
-            <motion.div
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setShowComposer(true)}
-              className="bg-white/70 backdrop-blur-sm rounded-3xl p-3 sm:p-4 border border-white/60 shadow-sm cursor-pointer flex items-center gap-3"
-            >
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl gradient-lavender flex items-center justify-center text-lg sm:text-xl border border-white/60 flex-shrink-0">
-                🌸
-              </div>
-              <p className="text-sm font-dm text-purple-400 flex-1 truncate">Share something with the community...</p>
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0">
-                <Send size={14} className="text-white" />
-              </div>
-            </motion.div>
-
-            {/* Composer modal */}
-            <AnimatePresence>
-              {showComposer && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 sm:p-4"
-                  onClick={(e) => { if (e.target === e.currentTarget) setShowComposer(false); }}
-                >
-                  <motion.div
-                    initial={{ y: 60, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 60, opacity: 0 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="bg-white/95 backdrop-blur-xl rounded-4xl p-5 sm:p-6 w-full max-w-lg border border-purple-100 shadow-2xl"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-nunito font-700 text-base text-purple-900">Share with Community</h3>
-                      <button
-                        onClick={() => setShowComposer(false)}
-                        className="w-8 h-8 rounded-xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-500 transition-colors"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <textarea
-                      value={newPost}
-                      onChange={(e) => setNewPost(e.target.value)}
-                      placeholder="What's on your mind? Share something kind, honest, or hopeful..."
-                      rows={5}
-                      className="w-full bg-purple-50/50 rounded-2xl p-4 text-sm font-dm text-purple-900 placeholder-purple-300 border border-purple-100 outline-none resize-none focus:ring-2 focus:ring-purple-200 transition-all leading-relaxed"
-                      autoFocus
-                    />
-                    <div className="flex items-center justify-between mt-3">
-                      <p className="text-xs font-dm text-purple-400">{newPost.length}/500</p>
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        onClick={submitPost}
-                        disabled={isPosting || !newPost.trim()}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-nunito font-700 text-sm bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md disabled:opacity-50 transition-all"
-                      >
-                        {isPosting ? (
-                          <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-                            <Send size={14} />
-                          </motion.div>
-                        ) : <Send size={14} />}
-                        {isPosting ? 'Posting...' : 'Post'}
-                      </motion.button>
-                    </div>
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {/* Posts */}
             <AnimatePresence>
