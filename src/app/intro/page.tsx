@@ -1,12 +1,18 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 export default function IntroPage() {
   const router = useRouter();
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll-reveal refs
+  const card1Ref = useRef<HTMLDivElement>(null);
+  const card2Ref = useRef<HTMLDivElement>(null);
+  const card3Ref = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -21,6 +27,49 @@ export default function IntroPage() {
     localStorage.setItem('auremind_intro_seen', 'true');
     router.push('/home-dashboard');
   };
+
+  // Intersection Observer for scroll-triggered animations
+  useEffect(() => {
+    const elements = [
+      { ref: card1Ref, delay: 0 },
+      { ref: card2Ref, delay: 120 },
+      { ref: card3Ref, delay: 240 },
+      { ref: btnRef, delay: 360 },
+    ];
+
+    const observers: IntersectionObserver[] = [];
+
+    elements.forEach(({ ref, delay }) => {
+      if (!ref.current) return;
+      const el = ref.current;
+
+      // Set initial hidden state
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(48px)';
+      el.style.transition = 'none';
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                el.style.transition = 'opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1)';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+              }, delay);
+              observer.unobserve(el);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((obs) => obs.disconnect());
+  }, []);
 
   return (
     <div
@@ -134,13 +183,13 @@ export default function IntroPage() {
 
           {/* Problem Statement — large card, spans 7 cols */}
           <div
+            ref={card1Ref}
             className="md:col-span-7 rounded-3xl p-7 md:p-8 relative overflow-hidden group"
             style={{
               background: 'rgba(255,255,255,0.62)',
               backdropFilter: 'blur(20px)',
               border: '1px solid rgba(205,180,219,0.4)',
               boxShadow: '0 8px 32px rgba(205,180,219,0.18), 0 2px 8px rgba(0,0,0,0.04)',
-              animation: 'slideInLeft 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both',
             }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 60px rgba(205,180,219,0.35), 0 4px 16px rgba(0,0,0,0.06)';
@@ -203,13 +252,13 @@ export default function IntroPage() {
 
           {/* Why We Exist — tall card, spans 5 cols */}
           <div
+            ref={card2Ref}
             className="md:col-span-5 rounded-3xl p-7 relative overflow-hidden"
             style={{
               background: 'rgba(255,255,255,0.55)',
               backdropFilter: 'blur(20px)',
               border: '1px solid rgba(162,210,255,0.4)',
               boxShadow: '0 8px 32px rgba(162,210,255,0.18), 0 2px 8px rgba(0,0,0,0.04)',
-              animation: 'slideInRight 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both',
             }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 60px rgba(162,210,255,0.35), 0 4px 16px rgba(0,0,0,0.06)';
@@ -264,13 +313,13 @@ export default function IntroPage() {
 
           {/* Solution — full width bottom card */}
           <div
+            ref={card3Ref}
             className="md:col-span-12 rounded-3xl p-7 md:p-8 relative overflow-hidden"
             style={{
               background: 'linear-gradient(135deg, rgba(255,175,204,0.35) 0%, rgba(255,200,221,0.25) 40%, rgba(205,180,219,0.3) 100%)',
               backdropFilter: 'blur(20px)',
               border: '1px solid rgba(255,175,204,0.4)',
               boxShadow: '0 8px 32px rgba(255,175,204,0.2), 0 2px 8px rgba(0,0,0,0.04)',
-              animation: 'slideInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both',
             }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 60px rgba(255,175,204,0.35), 0 4px 16px rgba(0,0,0,0.06)';
@@ -341,7 +390,7 @@ export default function IntroPage() {
         </div>
 
         {/* Continue button */}
-        <div className="flex flex-col items-center gap-3 pb-8" style={{ animation: 'slideInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s both' }}>
+        <div ref={btnRef} className="flex flex-col items-center gap-3 pb-8">
           <button
             onClick={handleContinue}
             className="relative group px-12 py-4 rounded-2xl font-nunito font-bold text-base text-white overflow-hidden"
@@ -408,18 +457,6 @@ export default function IntroPage() {
         }
         @keyframes slideInDown {
           from { opacity: 0; transform: translateY(-40px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-50px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(50px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideInUp {
-          from { opacity: 0; transform: translateY(40px); }
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
