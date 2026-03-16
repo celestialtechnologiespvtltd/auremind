@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import AppLogo from '@/components/ui/AppLogo';
-import { Bell, Settings, X, User, Users, FileText, ChevronRight, Eye, EyeOff, Menu, Home, Users2, BookOpen, Brain, Star, Trash2, Info, Shield, Clock } from 'lucide-react';
+import { Bell, Settings, X, User, Users, FileText, ChevronRight, Eye, EyeOff, Menu, Home, Users2, BookOpen, Brain, Star, Trash2, Info, Shield, Clock, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -789,6 +789,16 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                         </div>
                       </div>
                 )}
+                  <div className="bg-white/70 rounded-3xl border border-purple-100/60 p-4 flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+                      <Phone size={16} className="text-purple-500" />
+                    </div>
+                    <div>
+                      <p className="font-nunito font-700 text-sm text-purple-900">Contact Us</p>
+                      <p className="text-xs font-dm text-purple-500 leading-relaxed">Email: auremind@gmail.com</p>
+                      <p className="text-xs font-dm text-purple-500 leading-relaxed">Mobile: +91 84627 59314</p>
+                    </div>
+                  </div>
                   </div>
               }
               </div>
