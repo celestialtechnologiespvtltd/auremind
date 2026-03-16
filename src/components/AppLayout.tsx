@@ -124,10 +124,10 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
   useEffect(() => {
     if (!notifGranted) return;
     if (dailyReminder && dailyReminderTime) {
-      scheduleReminder('daily-checkin', 'MindBloom 🌸', 'Time for your daily mood check-in!', dailyReminderTime);
+      scheduleReminder('daily-checkin', 'AureMind 🌸', 'Time for your daily mood check-in!', dailyReminderTime);
     }
     if (exerciseReminder && exerciseReminderTime) {
-      scheduleReminder('exercise-reminder', 'MindBloom 💪', 'Time for your self-care exercise!', exerciseReminderTime);
+      scheduleReminder('exercise-reminder', 'AureMind 💪', 'Time for your self-care exercise!', exerciseReminderTime);
     }
   }, [notifGranted, dailyReminder, dailyReminderTime, exerciseReminder, exerciseReminderTime]);
 
@@ -700,7 +700,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                         <Shield size={16} className="text-blue-500 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-nunito font-700 text-sm text-blue-800 mb-1">Your Privacy</p>
-                          <p className="text-xs font-dm text-blue-700 leading-relaxed">All your data is stored locally on your device only. MindBloom never collects, transmits, or shares your personal information.</p>
+                          <p className="text-xs font-dm text-blue-700 leading-relaxed">All your data is stored locally on your device only. AureMind never collects, transmits, or shares your personal information.</p>
                         </div>
                       </div>
                     </div>
@@ -731,7 +731,7 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
                       className="overflow-hidden">
 
                             <div className="px-4 pb-4 text-xs font-dm text-purple-600 leading-relaxed border-t border-purple-50">
-                              <p className="pt-3">MindBloom is a wellness companion app. All data is stored locally on your device. We do not collect or share personal information. This app is not a substitute for professional mental health care. Use it as a supportive tool alongside professional guidance when needed.</p>
+                              <p className="pt-3">AureMind is a wellness companion app. All data is stored locally on your device. We do not collect or share personal information. This app is not a substitute for professional mental health care. Use it as a supportive tool alongside professional guidance when needed.</p>
                             </div>
                           </motion.div>
                     }
@@ -769,14 +769,14 @@ export default function AppLayout({ children, hideHeader = false }: AppLayoutPro
               <div className="space-y-3">
                     <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-5 border border-purple-100/60 text-center">
                       <div className="text-4xl mb-2">🌸</div>
-                      <p className="font-nunito font-800 text-lg text-purple-900">MindBloom</p>
+                      <p className="font-nunito font-800 text-lg text-purple-900">AureMind</p>
                       <p className="text-xs font-dm text-purple-500 mb-1">Version 2.0.0</p>
                       <p className="text-xs font-dm text-purple-400 leading-relaxed">Your personal mental wellness companion. Built with care for your journey.</p>
                     </div>
                     {[
-                { icon: <Info size={16} className="text-blue-400" />, bg: 'bg-blue-50', title: 'About MindBloom', desc: 'A wellness app for mood tracking, self-care, and daily motivation.' },
+                { icon: <Info size={16} className="text-blue-400" />, bg: 'bg-blue-50', title: 'About AureMind', desc: 'A wellness app for mood tracking, self-care, and daily motivation.' },
                 { icon: <Shield size={16} className="text-green-500" />, bg: 'bg-green-50', title: 'Data Storage', desc: 'All data stored locally. No servers, no tracking, no ads.' },
-                { icon: <FileText size={16} className="text-purple-400" />, bg: 'bg-purple-50', title: 'Not Medical Advice', desc: 'MindBloom is for personal wellness only, not clinical diagnosis.' }].
+                { icon: <FileText size={16} className="text-purple-400" />, bg: 'bg-purple-50', title: 'Not Medical Advice', desc: 'AureMind is for personal wellness only, not clinical diagnosis.' }].
                 map((item, i) =>
                 <div key={i} className="bg-white/70 rounded-3xl border border-purple-100/60 p-4 flex items-start gap-3">
                         <div className={`w-9 h-9 rounded-xl ${item.bg} flex items-center justify-center flex-shrink-0`}>

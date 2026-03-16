@@ -10,7 +10,7 @@ self.addEventListener('activate', (event) => {
 // Handle push events from server (future use)
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {};
-  const title = data.title || 'MindBloom';
+  const title = data.title || 'AureMind';
   const options = {
     body: data.body || 'Time for your wellness check-in 🌸',
     icon: '/assets/images/app_logo.png',

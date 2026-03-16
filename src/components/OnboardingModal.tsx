@@ -75,7 +75,7 @@ export default function OnboardingModal() {
               >
                 🌸
               </motion.div>
-              <h1 className="font-nunito font-800 text-2xl text-purple-900">Welcome to MindBloom</h1>
+              <h1 className="font-nunito font-800 text-2xl text-purple-900">Welcome to AureMind</h1>
               <p className="text-sm font-dm text-purple-500 mt-1">Your personal wellness sanctuary 🌿</p>
             </div>
 

@@ -4,7 +4,7 @@ import { Toaster } from 'sonner';
 import OnboardingModal from '@/components/OnboardingModal';
 
 export const metadata: Metadata = {
-  title: 'MindBloom — Your Mental Wellness Companion',
+  title: 'AureMind — Your Mental Wellness Companion',
   description: 'A calming mental wellness app for daily mood tracking, journaling, and self-care.',
 };
 

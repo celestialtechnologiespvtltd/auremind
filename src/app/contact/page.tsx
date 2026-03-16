@@ -127,7 +127,7 @@ export default function ContactPage() {
               <div className="flex gap-2">
                 <motion.a
                   whileTap={{ scale: 0.95 }}
-                  href={`https://wa.me/${pro?.whatsapp}?text=Hi%20${encodeURIComponent(pro?.name)}%2C%20I%20found%20you%20on%20MindBloom%20and%20would%20like%20to%20book%20a%20consultation.`}
+                  href={`https://wa.me/${pro?.whatsapp}?text=Hi%20${encodeURIComponent(pro?.name)}%2C%20I%20found%20you%20on%20AureMind%20and%20would%20like%20to%20book%20a%20consultation.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-2xl bg-green-500 text-white font-nunito font-700 text-xs shadow-md hover:bg-green-600 transition-colors min-h-[44px]"
@@ -137,7 +137,7 @@ export default function ContactPage() {
                 </motion.a>
                 <motion.a
                   whileTap={{ scale: 0.95 }}
-                  href={`mailto:${pro?.email}?subject=Consultation%20Request%20via%20MindBloom`}
+                  href={`mailto:${pro?.email}?subject=Consultation%20Request%20via%20AureMind`}
                   className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-2xl bg-white/70 border border-white/60 font-nunito font-700 text-xs transition-colors hover:bg-white/90 min-h-[44px]"
                 >
                   <Mail size={14} className={pro?.textColor} />

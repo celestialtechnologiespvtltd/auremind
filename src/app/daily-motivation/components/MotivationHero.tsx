@@ -11,7 +11,7 @@ const quotes = [
   { text: "You are allowed to be both a masterpiece and a work in progress simultaneously.", author: 'Sophia Bush', category: 'Growth', emoji: '✨', gradient: 'from-amber-100 via-yellow-100 to-pink-100' },
   { text: "The present moment is the only moment available to us, and it is the door to all moments.", author: 'Thich Nhat Hanh', category: 'Mindfulness', emoji: '🧘', gradient: 'from-purple-100 via-indigo-100 to-blue-100' },
   { text: "Healing is not linear. Some days you will take two steps forward and one step back — and that is still progress.", author: 'Unknown', category: 'Healing', emoji: '🌱', gradient: 'from-green-100 via-emerald-100 to-teal-100' },
-  { text: "Your feelings are valid. Your struggles are real. And you are worthy of love and support exactly as you are.", author: 'MindBloom', category: 'Worthiness', emoji: '💜', gradient: 'from-purple-100 via-pink-100 to-rose-100' },
+  { text: "Your feelings are valid. Your struggles are real. And you are worthy of love and support exactly as you are.", author: 'AureMind', category: 'Worthiness', emoji: '💜', gradient: 'from-purple-100 via-pink-100 to-rose-100' },
   { text: "You don't have to earn rest. You are allowed to simply be.", author: 'Unknown', category: 'Rest', emoji: '🌙', gradient: 'from-indigo-100 via-blue-100 to-purple-100' },
   { text: "The most important relationship in your life is the one you have with yourself.", author: 'Diane Von Furstenberg', category: 'Self-love', emoji: '💖', gradient: 'from-rose-100 via-pink-100 to-purple-100' },
   { text: "Breathe. You are exactly where you need to be.", author: 'Unknown', category: 'Mindfulness', emoji: '🍃', gradient: 'from-green-100 via-teal-100 to-cyan-100' },
