@@ -442,7 +442,7 @@ export default function ExerciseCards() {
         <span className="text-xs font-dm text-purple-400">Tap to start</span>
       </div>
 
-      <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+      <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-3 -mt-3">
         {exercises.map((ex, i) => (
           <motion.button
             key={ex.name}

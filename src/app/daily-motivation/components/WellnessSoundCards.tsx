@@ -290,7 +290,7 @@ export default function WellnessSoundCards() {
         <h2 className="font-nunito font-700 text-lg text-purple-900">Relaxing Sounds 🎶</h2>
         <span className="text-xs font-dm text-purple-400">Tap to play</span>
       </div>
-      <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+      <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-3 -mt-3">
         {sounds.map((s, i) => (
           <motion.button
             key={s.name}
