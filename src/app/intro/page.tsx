@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 
 const sections = [
   {
-    side: 'left',
     title: 'Problem Statement',
     emoji: '💭',
     gradient: 'from-purple-400 to-purple-500',
@@ -13,7 +12,6 @@ const sections = [
     text: 'Many people today struggle with stress, emotional burnout, and mental health challenges. In a fast-moving world, people rarely have a calm space to pause, reflect, and understand their emotions.',
   },
   {
-    side: 'right',
     title: 'Solution',
     emoji: '✨',
     gradient: 'from-pink-400 to-pink-500',
@@ -21,7 +19,6 @@ const sections = [
     text: 'AureMind offers a peaceful digital environment where users can track their mood, reflect through journaling, explore self-awareness tools, and stay motivated while connecting with a supportive community.',
   },
   {
-    side: 'left',
     title: 'Why We Exist',
     emoji: '🌱',
     gradient: 'from-blue-400 to-purple-400',
@@ -64,7 +61,7 @@ export default function IntroPage() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="text-center mb-3 flex-shrink-0"
+          className="text-center mb-4 flex-shrink-0"
         >
           <div className="flex justify-center mb-1.5">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shadow-lg">
@@ -79,8 +76,8 @@ export default function IntroPage() {
           </p>
         </motion.div>
 
-        {/* ── Alternating Floating Sections ── */}
-        <div className="flex flex-col gap-3 flex-1 justify-center min-h-0">
+        {/* ── Vertical Portrait Cards Row ── */}
+        <div className="flex flex-row gap-4 flex-1 justify-center items-stretch min-h-0">
           {sections.map((section, i) => (
             <motion.div
               key={section.title}
@@ -89,27 +86,35 @@ export default function IntroPage() {
               animate="visible"
               variants={fadeUp}
               whileHover={{
-                y: -6,
-                boxShadow: '0 20px 40px -8px rgba(139, 92, 246, 0.25)',
+                y: -8,
+                boxShadow: '0 24px 48px -8px rgba(139, 92, 246, 0.30)',
                 transition: { duration: 0.25, ease: 'easeOut' },
               }}
-              className={`flex ${section.side === 'right' ? 'justify-end' : 'justify-start'} cursor-default`}
+              className="flex-1 cursor-default"
             >
               <div
-                className={`w-[75%] md:w-[65%] rounded-3xl p-4 md:p-5 border shadow-md ${section.bg} transition-shadow duration-300`}
+                className={`h-full rounded-3xl p-5 md:p-6 border shadow-md ${section.bg} transition-shadow duration-300 flex flex-col`}
                 style={{ backdropFilter: 'blur(12px)' }}
               >
-                <div className="flex items-center gap-2.5 mb-2">
+                {/* Icon */}
+                <div className="flex justify-center mb-4">
                   <div
-                    className={`w-9 h-9 rounded-xl bg-gradient-to-br ${section.gradient} flex items-center justify-center shadow-sm flex-shrink-0`}
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${section.gradient} flex items-center justify-center shadow-md`}
                   >
-                    <span className="text-base">{section.emoji}</span>
+                    <span className="text-2xl">{section.emoji}</span>
                   </div>
-                  <h2 className="font-nunito font-bold text-lg md:text-xl text-purple-900">
-                    {section.title}
-                  </h2>
                 </div>
-                <p className="font-dm text-xs md:text-sm text-purple-700 leading-relaxed">
+
+                {/* Title */}
+                <h2 className="font-nunito font-bold text-base md:text-lg text-purple-900 text-center mb-3">
+                  {section.title}
+                </h2>
+
+                {/* Divider */}
+                <div className={`h-0.5 w-10 mx-auto rounded-full bg-gradient-to-r ${section.gradient} mb-3 opacity-60`} />
+
+                {/* Text */}
+                <p className="font-dm text-xs md:text-sm text-purple-700 leading-relaxed text-center flex-1">
                   {section.text}
                 </p>
               </div>
@@ -123,7 +128,7 @@ export default function IntroPage() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="flex justify-center mt-3 flex-shrink-0"
+          className="flex justify-center mt-4 flex-shrink-0"
         >
           <motion.button
             whileHover={{ scale: 1.04, y: -2 }}
