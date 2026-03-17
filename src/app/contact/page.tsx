@@ -65,7 +65,7 @@ export default function ContactPage() {
         <div className="flex items-center gap-3">
           <motion.button
             whileTap={{ scale: 0.9 }}
-            onClick={() => router?.back()}
+            onClick={() => router?.push('/daily-motivation')}
             className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-2xl bg-white/70 border border-purple-100 flex items-center justify-center text-purple-600 hover:bg-white transition-colors"
           >
             <ArrowLeft size={18} />
