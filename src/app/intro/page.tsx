@@ -160,18 +160,19 @@ export default function IntroPage() {
       <div className="relative z-10 flex flex-col min-h-screen px-5 md:px-10 py-8 w-full mx-auto items-center">
 
         {/* Header — brand identity */}
-        <div className="text-center mb-10 md:mb-14 w-full" style={{ animation: 'slideInDown 0.8s cubic-bezier(0.22, 1, 0.36, 1) both' }}>
+        <div className="text-center mb-6 md:mb-10 w-full" style={{ animation: 'slideInDown 0.8s cubic-bezier(0.22, 1, 0.36, 1) both' }}>
           {/* Logo image */}
           <div className="flex justify-center items-center w-full mb-4">
             <img
               src="/assets/images/ChatGPT_Image_Mar_16_2026_04_44_37_PM-1773661537529.png"
               alt="AureMind logo"
-              style={{ width: '880px', height: '880px', objectFit: 'contain' }}
+              className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[440px] lg:h-[440px]"
+              style={{ objectFit: 'contain' }}
             />
           </div>
 
           {/* Decorative line */}
-          <div className="flex items-center justify-center gap-3 mt-4">
+          <div className="flex items-center justify-center gap-3 mt-2">
             <div className="h-px w-16 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #CDB4DB)' }} />
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#CDB4DB' }} />
             <div className="h-px w-16 rounded-full" style={{ background: 'linear-gradient(90deg, #A2D2FF, transparent)' }} />
