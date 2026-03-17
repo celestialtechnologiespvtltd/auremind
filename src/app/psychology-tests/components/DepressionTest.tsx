@@ -127,6 +127,8 @@ export default function DepressionTest({ onBack }: Props) {
     );
   }
 
+  if (!q) return null;
+
   return (
     <div className="space-y-4">
       {/* Header */}
