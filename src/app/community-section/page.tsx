@@ -6,32 +6,27 @@ import CommunityFeed from './components/CommunityFeed';
 import CommunityHeader from './components/CommunityHeader';
 import CommunityGuidelinesModal from './components/CommunityGuidelinesModal';
 
-const GUIDELINES_KEY = 'mindbloom_community_guidelines_v2';
+const GUIDELINES_KEY = 'mindbloom_community_guidelines_v3';
 
 export default function CommunitySectionPage() {
-  const [guidelinesAccepted, setGuidelinesAccepted] = useState<boolean | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const accepted = localStorage.getItem(GUIDELINES_KEY) === 'true';
-    setGuidelinesAccepted(accepted);
+    if (!accepted) {
+      setShowModal(true);
+    }
   }, []);
-
-  // Don't render anything until we've checked localStorage on the client
-  if (guidelinesAccepted === null) {
-    return <AppLayout><div /></AppLayout>;
-  }
 
   return (
     <AppLayout>
-      {!guidelinesAccepted && (
-        <CommunityGuidelinesModal onAccepted={() => setGuidelinesAccepted(true)} />
+      {showModal && (
+        <CommunityGuidelinesModal onAccepted={() => setShowModal(false)} />
       )}
-      {guidelinesAccepted && (
-        <div className="space-y-5 py-2">
-          <CommunityHeader />
-          <CommunityFeed />
-        </div>
-      )}
+      <div className="space-y-5 py-2">
+        <CommunityHeader />
+        <CommunityFeed />
+      </div>
     </AppLayout>
   );
 }
