@@ -16,10 +16,10 @@ export default function DailyMotivationPage() {
             {new Date()?.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
         </div>
+        <ConsultCard />
         <ExerciseCards />
         <WellnessSoundCards />
         <WellnessTipsList />
-        <ConsultCard />
       </div>
     </AppLayout>
   );
