@@ -129,9 +129,6 @@ export default function OnboardingModal() {
                   Elevate Your Mind · Embrace Your Calm
                 </p>
               </div>
-              <p className="text-xs font-dm text-purple-400 leading-relaxed px-1">
-                AureMind is your personal mental wellness companion designed to help you understand your emotions, track your mood, and build a healthier mind through reflection, motivation, and community support.
-              </p>
             </div>
 
             {/* Step indicator */}
