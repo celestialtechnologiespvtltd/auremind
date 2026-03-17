@@ -51,20 +51,11 @@ const features = [
     textColor: 'text-green-800',
     type: 'community',
   },
-  {
-    title: 'Consult',
-    desc: 'Talk to an expert',
-    emoji: '💬',
-    gradient: 'gradient-cream',
-    path: '/contact',
-    textColor: 'text-amber-800',
-    type: 'consult',
-  },
 ];
 
 const slides = [
   features.slice(0, 3),
-  features.slice(3, 6),
+  features.slice(3, 5),
 ];
 
 // Self Care: floating breath circles

@@ -4,6 +4,7 @@ import AppLayout from '@/components/AppLayout';
 import ExerciseCards from './components/ExerciseCards';
 import WellnessSoundCards from './components/WellnessSoundCards';
 import WellnessTipsList from './components/WellnessTipsList';
+import ConsultCard from './components/ConsultCard';
 
 export default function DailyMotivationPage() {
   return (
@@ -18,6 +19,7 @@ export default function DailyMotivationPage() {
         <ExerciseCards />
         <WellnessSoundCards />
         <WellnessTipsList />
+        <ConsultCard />
       </div>
     </AppLayout>
   );
