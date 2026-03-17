@@ -61,7 +61,7 @@ export default function CommunityGuidelinesModal({ onAccepted }: CommunityGuidel
 
   const handleAccept = () => {
     if (!checked) return;
-    localStorage.setItem(GUIDELINES_KEY, 'true');
+    sessionStorage.setItem(GUIDELINES_KEY, 'true');
     onAccepted();
   };
 

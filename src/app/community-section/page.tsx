@@ -12,7 +12,7 @@ export default function CommunitySectionPage() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const accepted = localStorage.getItem(GUIDELINES_KEY) === 'true';
+    const accepted = sessionStorage.getItem(GUIDELINES_KEY) === 'true';
     if (!accepted) {
       setShowModal(true);
     }
