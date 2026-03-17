@@ -456,7 +456,7 @@ export default function ExerciseCards() {
             className={`relative bg-gradient-to-br ${ex.gradient} rounded-3xl p-4 flex flex-col items-center justify-between min-w-[110px] w-[110px] h-[190px] border border-white/60 shadow-sm transition-shadow duration-300 overflow-hidden`}
           >
             {/* Top content area - fixed height */}
-            <div className="flex flex-col items-center w-full">
+            <div className="flex flex-col items-center w-full flex-1">
               {/* In-card animation */}
               {ex.type === 'breathing' ? (
                 <CardBreathingAnim />
