@@ -166,7 +166,7 @@ export default function IntroPage() {
             <img
               src="/assets/images/ChatGPT_Image_Mar_16_2026_04_44_37_PM-1773661537529.png"
               alt="AureMind logo"
-              style={{ width: '780px', height: '780px', objectFit: 'contain' }}
+              style={{ width: '880px', height: '880px', objectFit: 'contain' }}
             />
           </div>
 
