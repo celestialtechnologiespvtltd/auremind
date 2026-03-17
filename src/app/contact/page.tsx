@@ -2,7 +2,7 @@
 
 import AppLayout from '@/components/AppLayout';
 import { Mail, Phone, MessageCircle, ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const professionals = [
   {
@@ -56,18 +56,16 @@ const professionals = [
 ];
 
 export default function ContactPage() {
-  const router = useRouter();
-
   return (
     <AppLayout>
       <div className="space-y-5 py-2">
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => router?.push('/daily-motivation')}
+          <Link
+            href="/daily-motivation"
             className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-2xl bg-white/70 border border-purple-100 flex items-center justify-center text-purple-600 hover:bg-white transition-colors active:scale-90"
           >
             <ArrowLeft size={18} />
-          </button>
+          </Link>
           <div>
             <h1 className="font-nunito font-800 text-2xl text-purple-900">Consult an Expert 💬</h1>
             <p className="text-sm font-dm text-purple-500 mt-0.5">Connect with a mental health professional</p>
