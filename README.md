@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/assets/auremind.png" />
+</p>
+
 # AureMind — Your Mental Wellness Companion
 
 > A frontend mental wellness web application built for a hackathon, designed to help users track their mental health, reflect through journaling, explore mindfulness, and connect with a supportive community.
